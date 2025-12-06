@@ -1,0 +1,511 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import { getCollection } from 'astro:content';
+
+const featuredProjects = (await getCollection('projects'))
+  .filter(project => project.data.featured)
+  .sort((a, b) => a.data.order - b.data.order)
+  .slice(0, 3);
+---
+
+<BaseLayout title="민동익 (Douglas) - 개발자 포트폴리오" description="민동익(Douglas)의 풀스택 개발자 포트폴리오 웹사이트">
+  <!-- Hero Section -->
+  <section class="hero">
+    <div class="container">
+      <div class="hero-content animate-fade-in">
+        <h1 class="hero-title">
+          안녕하세요! 👋<br />
+          저는 <span class="gradient-text">민동익</span> 입니다
+        </h1>
+        <p class="hero-description">
+          사용자 경험을 최우선으로 생각하는 풀스택 개발자입니다.<br />
+          사용자가 필요로 하는 애플리케이션을 빠르게 MVP로 만들어<br />
+          시장 반응을 확인합니다.
+        </p>
+        <p class="hero-subtitle">
+          Dongik Min (Douglas)
+        </p>
+        <div class="hero-cta">
+          <a href="/projects" class="btn btn-primary">프로젝트 보기</a>
+          <a href="/about" class="btn btn-secondary">소개 보기</a>
+        </div>
+      </div>
+      
+      <div class="hero-visual animate-fade-in">
+        <div class="laptop-container">
+          <div class="laptop">
+            <div class="laptop-screen">
+              <div class="code-editor">
+                <div class="editor-header">
+                  <span class="dot red"></span>
+                  <span class="dot yellow"></span>
+                  <span class="dot green"></span>
+                </div>
+                <div class="code-content">
+                  <div class="code-line">
+                    <span class="code-keyword">const</span>
+                    <span class="code-text"> developer = </span>
+                    <span class="code-string">"Douglas"</span>
+                  </div>
+                  <div class="code-line delay-1">
+                    <span class="code-keyword">function</span>
+                    <span class="code-text"> build</span>
+                    <span class="code-bracket">()</span>
+                    <span class="code-text"> {</span>
+                  </div>
+                  <div class="code-line delay-2">
+                    <span class="code-text">  return </span>
+                    <span class="code-string">"✨ Magic"</span>
+                  </div>
+                  <div class="code-line delay-3">
+                    <span class="code-text">}</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="laptop-base"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Skills Section -->
+  <section class="skills-section">
+    <div class="container">
+      <h2 class="section-title">기술 스택</h2>
+      
+      <div class="skills-grid">
+        <div class="skill-category">
+          <h3>Frontend</h3>
+          <div class="skill-icons-grid">
+            <img src="https://skillicons.dev/icons?i=react,vue,ts,astro,tailwind" alt="Frontend Skills" />
+          </div>
+        </div>
+        
+        <div class="skill-category">
+          <h3>Backend</h3>
+          <div class="skill-icons-grid">
+            <img src="https://skillicons.dev/icons?i=nodejs,python,postgres,mongodb,graphql" alt="Backend Skills" />
+          </div>
+        </div>
+        
+        <div class="skill-category">
+          <h3>DevOps & Tools</h3>
+          <div class="skill-icons-grid">
+            <img src="https://skillicons.dev/icons?i=docker,aws,git,github,vercel" alt="DevOps Skills" />
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Featured Projects -->
+  {featuredProjects.length > 0 && (
+    <section class="featured-projects-section">
+      <div class="container">
+        <div class="section-header">
+          <h2 class="section-title">주요 프로젝트</h2>
+          <a href="/projects" class="view-all-link">전체 보기 →</a>
+        </div>
+        
+        <div class="projects-grid">
+          {featuredProjects.map((project, index) => (
+            <article class="project-card" style={`animation-delay: ${index * 0.1}s`}>
+              <div class="project-image">
+                <img src={project.data.image.src} alt={project.data.title} loading="lazy" />
+              </div>
+              <div class="project-content">
+                <h3>{project.data.title}</h3>
+                <p>{project.data.description}</p>
+                <div class="project-tags">
+                  {project.data.tags.map(tag => (
+                    <span class="tag">{tag}</span>
+                  ))}
+                </div>
+              </div>
+            </article>
+          ))}
+        </div>
+      </div>
+    </section>
+  )}
+
+  <!-- CTA Section -->
+  <section class="cta-section">
+    <div class="container">
+      <div class="cta-content">
+        <h2>함께 일하고 싶으신가요?</h2>
+        <p>새로운 프로젝트나 협업 기회에 항상 열려있습니다.</p>
+        <a href="/about#contact" class="btn btn-primary">연락하기</a>
+      </div>
+    </div>
+  </section>
+</BaseLayout>
+
+<style>
+  .hero {
+    padding: var(--spacing-2xl) 0;
+    min-height: 80vh;
+    display: flex;
+    align-items: center;
+  }
+
+  .hero .container {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: var(--spacing-xl);
+    align-items: center;
+  }
+
+  .hero-content {
+    z-index: 1;
+  }
+
+  .hero-title {
+    font-size: clamp(2.5rem, 6vw, 4rem);
+    margin-bottom: var(--spacing-md);
+    line-height: 1.1;
+  }
+
+  .gradient-text {
+    background: linear-gradient(135deg, var(--color-accent), #8b5cf6, #ec4899);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  .hero-description {
+    font-size: 1.25rem;
+    margin-bottom: var(--spacing-md);
+    line-height: 1.8;
+  }
+
+  .hero-subtitle {
+    font-size: 1.125rem;
+    margin-bottom: var(--spacing-lg);
+    color: var(--color-accent);
+    font-weight: 600;
+    font-style: italic;
+  }
+
+  .hero-cta {
+    display: flex;
+    gap: var(--spacing-md);
+    flex-wrap: wrap;
+  }
+
+  .btn {
+    display: inline-block;
+    padding: 1rem 2rem;
+    border-radius: var(--radius-lg);
+    font-weight: 600;
+    transition: all var(--transition-base);
+    cursor: pointer;
+  }
+
+  .btn-primary {
+    background: linear-gradient(135deg, var(--color-accent), #8b5cf6);
+    color: white;
+    box-shadow: var(--shadow-md);
+  }
+
+  .btn-primary:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-lg);
+  }
+
+  .btn-secondary {
+    background-color: transparent;
+    color: var(--color-text);
+    border: 2px solid var(--color-border);
+  }
+
+  .btn-secondary:hover {
+    border-color: var(--color-accent);
+    color: var(--color-accent);
+  }
+
+  /* Laptop Animation */
+  .hero-visual {
+    position: relative;
+    height: 400px;
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    padding-right: 50px;
+  }
+
+  .laptop-container {
+    perspective: 1000px;
+    animation: float 4s ease-in-out infinite;
+  }
+
+  @keyframes float {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-20px); }
+  }
+
+  .laptop {
+    width: 320px;
+  }
+
+  .laptop-screen {
+    background: linear-gradient(135deg, #1e293b, #0f172a);
+    border: 8px solid #334155;
+    border-bottom: none;
+    border-radius: 12px 12px 0 0;
+    padding: 12px;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+  }
+
+  :global([data-theme="light"]) .laptop-screen {
+    background: linear-gradient(135deg, #f1f5f9, #e2e8f0);
+    border-color: #cbd5e1;
+  }
+
+  .laptop-base {
+    width: 360px;
+    height: 12px;
+    background: linear-gradient(to bottom, #475569, #334155);
+    border-radius: 0 0 8px 8px;
+    margin: 0 auto;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+  }
+
+  :global([data-theme="light"]) .laptop-base {
+    background: linear-gradient(to bottom, #94a3b8, #cbd5e1);
+  }
+
+  .code-editor {
+    background: #1e293b;
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+  }
+
+  :global([data-theme="light"]) .code-editor {
+    background: #ffffff;
+  }
+
+  .editor-header {
+    background: #0f172a;
+    padding: 8px 12px;
+    display: flex;
+    gap: 6px;
+  }
+
+  :global([data-theme="light"]) .editor-header {
+    background: #f1f5f9;
+  }
+
+  .dot {
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+  }
+
+  .dot.red { background: #ef4444; }
+  .dot.yellow { background: #eab308; }
+  .dot.green { background: #22c55e; }
+
+  .code-content {
+    padding: 16px;
+    font-family: 'Courier New', monospace;
+    font-size: 13px;
+    line-height: 1.6;
+  }
+
+  .code-line {
+    opacity: 0;
+    animation: fadeInLine 0.5s ease-out forwards;
+  }
+
+  .code-line.delay-1 { animation-delay: 0.5s; }
+  .code-line.delay-2 { animation-delay: 1s; }
+  .code-line.delay-3 { animation-delay: 1.5s; }
+
+  @keyframes fadeInLine {
+    from {
+      opacity: 0;
+      transform: translateX(-10px);
+    }
+    to {
+      opacity: 1;
+      transform: translateX(0);
+    }
+  }
+
+  .code-keyword { color: #c084fc; font-weight: 600; }
+  .code-text { color: #e2e8f0; }
+  :global([data-theme="light"]) .code-text { color: #334155; }
+  .code-string { color: #34d399; }
+  .code-bracket { color: #60a5fa; }
+
+  .code-line:last-child::after {
+    content: '|';
+    color: #60a5fa;
+    animation: blink 1s step-end infinite;
+    margin-left: 2px;
+  }
+
+  @keyframes blink {
+    0%, 50% { opacity: 1; }
+    51%, 100% { opacity: 0; }
+  }
+
+  /* Skills Section */
+  .skills-section {
+    padding: var(--spacing-2xl) 0;
+    background-color: var(--color-bg-secondary);
+  }
+
+  .section-title {
+    text-align: center;
+    margin-bottom: var(--spacing-xl);
+  }
+
+  .skills-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: var(--spacing-lg);
+  }
+
+  .skill-category {
+    background-color: var(--color-bg);
+    padding: var(--spacing-lg);
+    border-radius: var(--radius-lg);
+    border: 1px solid var(--color-border);
+  }
+
+  .skill-category h3 {
+    margin-bottom: var(--spacing-md);
+    color: var(--color-accent);
+    text-align: center;
+  }
+
+  .skill-icons-grid {
+    display: flex;
+    justify-content: center;
+  }
+
+  .skill-icons-grid img {
+    width: 100%;
+    max-width: 300px;
+  }
+
+  /* CTA Section */
+  .cta-section {
+    padding: var(--spacing-2xl) 0;
+    background: linear-gradient(135deg, rgba(59, 130, 246, 0.1), rgba(139, 92, 246, 0.1));
+  }
+
+  .cta-content {
+    text-align: center;
+    max-width: 600px;
+    margin: 0 auto;
+  }
+
+  .cta-content h2 {
+    margin-bottom: var(--spacing-md);
+  }
+
+  .cta-content p {
+    font-size: 1.125rem;
+    margin-bottom: var(--spacing-lg);
+  }
+
+  /* Featured Projects */
+  .featured-projects-section {
+    padding: var(--spacing-2xl) 0;
+  }
+
+  .section-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: var(--spacing-xl);
+  }
+
+  .view-all-link {
+    font-weight: 600;
+    transition: transform var(--transition-fast);
+  }
+
+  .view-all-link:hover {
+    transform: translateX(4px);
+  }
+
+  .projects-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: var(--spacing-lg);
+  }
+
+  .project-card {
+    background-color: var(--color-bg-secondary);
+    border-radius: var(--radius-lg);
+    overflow: hidden;
+    border: 1px solid var(--color-border);
+    transition: all var(--transition-base);
+    animation: fadeIn 0.6s ease-out forwards;
+    opacity: 0;
+  }
+
+  .project-card:hover {
+    transform: translateY(-8px);
+    box-shadow: var(--shadow-lg);
+  }
+
+  .project-image {
+    width: 100%;
+    height: 200px;
+    overflow: hidden;
+    background-color: var(--color-border);
+  }
+
+  .project-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform var(--transition-slow);
+  }
+
+  .project-card:hover .project-image img {
+    transform: scale(1.05);
+  }
+
+  .project-content {
+    padding: var(--spacing-md);
+  }
+
+  .project-content h3 {
+    margin-bottom: var(--spacing-sm);
+  }
+
+  .project-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--spacing-xs);
+    margin: var(--spacing-md) 0;
+  }
+
+  .tag {
+    background-color: var(--color-bg);
+    color: var(--color-text-secondary);
+    padding: 0.25rem 0.75rem;
+    border-radius: var(--radius-sm);
+    font-size: 0.75rem;
+    border: 1px solid var(--color-border);
+  }
+
+  @media (max-width: 768px) {
+    .hero .container {
+      grid-template-columns: 1fr;
+    }
+    
+    .hero-visual {
+      display: none;
+    }
+  }
+</style>

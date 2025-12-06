@@ -1,0 +1,48 @@
+name: Notion Webhook Trigger
+
+on:
+  # API로 수동 트리거 가능
+  repository_dispatch:
+    types: [notion-update]
+  
+  # 또는 수동 실행
+  workflow_dispatch:
+
+jobs:
+  rebuild:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v3
+    
+    - name: Setup Node.js
+      uses: actions/setup-node@v3
+      with:
+        node-version: '20'
+    
+    - name: Install dependencies
+      run: npm ci
+    
+    - name: Sync Notion
+      run: npm run sync-notion
+      env:
+        NOTION_TOKEN: ${{ secrets.NOTION_TOKEN }}
+        NOTION_DATABASE_ID: ${{ secrets.NOTION_DATABASE_ID }}
+    
+    - name: Build site
+      run: npm run build
+    
+    - name: Deploy to S3
+      uses: aws-actions/configure-aws-credentials@v2
+      with:
+        aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+        aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+        aws-region: ${{ secrets.AWS_REGION }}
+    
+    - run: |
+        aws s3 sync dist/ s3://${{ secrets.S3_BUCKET_NAME }} --delete
+        aws cloudfront create-invalidation \
+          --distribution-id ${{ secrets.CLOUDFRONT_DISTRIBUTION_ID }} \
+          --paths "/*"
+

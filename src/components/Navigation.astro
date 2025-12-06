@@ -1,0 +1,213 @@
+---
+const navLinks = [
+  { name: '홈', href: '/' },
+  { name: '프로젝트', href: '/projects' },
+  { name: '블로그', href: '/blog' },
+  { name: 'About', href: '/about' },
+];
+
+const currentPath = Astro.url.pathname;
+---
+
+<header class="header">
+  <nav class="nav container">
+    <a href="/" class="logo">
+      <span class="logo-text">Dongik's Portfolio</span>
+    </a>
+
+    <div class="nav-links">
+      {navLinks.map((link) => (
+        <a 
+          href={link.href} 
+          class:list={['nav-link', { active: currentPath === link.href }]}
+        >
+          {link.name}
+        </a>
+      ))}
+    </div>
+
+    <button id="theme-toggle" class="theme-toggle" aria-label="테마 전환">
+      <svg class="sun-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <circle cx="12" cy="12" r="5"/>
+        <line x1="12" y1="1" x2="12" y2="3"/>
+        <line x1="12" y1="21" x2="12" y2="23"/>
+        <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/>
+        <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/>
+        <line x1="1" y1="12" x2="3" y2="12"/>
+        <line x1="21" y1="12" x2="23" y2="12"/>
+        <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/>
+        <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/>
+      </svg>
+      <svg class="moon-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
+      </svg>
+    </button>
+  </nav>
+</header>
+
+<style>
+  .header {
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    backdrop-filter: blur(10px);
+    transition: all 0.3s ease;
+    background-color: rgba(255, 255, 255, 0.95);
+    border-bottom: 1px solid #e5e7eb;
+  }
+
+  :global([data-theme="dark"]) .header {
+    background-color: rgba(15, 23, 42, 0.95);
+    border-bottom: 1px solid #334155;
+  }
+
+  .nav {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 1rem;
+    gap: 1.5rem;
+  }
+
+  .logo {
+    font-size: 1.5rem;
+    font-weight: 700;
+    transition: transform 0.2s;
+  }
+
+  .logo:hover {
+    transform: scale(1.05);
+  }
+
+  .logo-text {
+    background: linear-gradient(135deg, #3b82f6, #8b5cf6);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  :global([data-theme="dark"]) .logo-text {
+    background: linear-gradient(135deg, #60a5fa, #c084fc);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  .nav-links {
+    display: flex;
+    gap: 2rem;
+    flex: 1;
+    justify-content: center;
+  }
+
+  .nav-link {
+    position: relative;
+    color: #6b7280;
+    font-weight: 500;
+    padding: 0.5rem 0;
+    transition: color 0.2s;
+  }
+
+  .nav-link:hover,
+  .nav-link.active {
+    color: #1f2937;
+  }
+
+  :global([data-theme="dark"]) .nav-link {
+    color: #9ca3af;
+  }
+
+  :global([data-theme="dark"]) .nav-link:hover,
+  :global([data-theme="dark"]) .nav-link.active {
+    color: #f3f4f6;
+  }
+
+  .nav-link::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 0;
+    height: 2px;
+    background: linear-gradient(90deg, #3b82f6, #8b5cf6);
+    transition: width 0.3s;
+  }
+
+  .nav-link:hover::after,
+  .nav-link.active::after {
+    width: 100%;
+  }
+
+  .theme-toggle {
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 0.5rem;
+    border-radius: 0.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background-color 0.2s;
+    color: #374151;
+  }
+
+  .theme-toggle:hover {
+    background-color: #f3f4f6;
+  }
+
+  :global([data-theme="dark"]) .theme-toggle {
+    color: #d1d5db;
+  }
+
+  :global([data-theme="dark"]) .theme-toggle:hover {
+    background-color: #1e293b;
+  }
+
+  .sun-icon {
+    display: none;
+  }
+
+  .moon-icon {
+    display: block;
+  }
+
+  :global([data-theme="dark"]) .sun-icon {
+    display: block;
+  }
+
+  :global([data-theme="dark"]) .moon-icon {
+    display: none;
+  }
+</style>
+
+<script>
+  function setupThemeToggle() {
+    const themeToggle = document.getElementById('theme-toggle');
+    const html = document.documentElement;
+
+    const savedTheme = localStorage.getItem('theme') || 'light';
+    html.dataset.theme = savedTheme;
+
+    themeToggle?.addEventListener('click', () => {
+      const currentTheme = html.dataset.theme;
+      const newTheme = currentTheme === 'light' ? 'dark' : 'light';
+      
+      html.dataset.theme = newTheme;
+      localStorage.setItem('theme', newTheme);
+    });
+  }
+
+  // 첫 로드
+  setupThemeToggle();
+
+  // View Transitions 페이지 전환 시
+  document.addEventListener('astro:page-load', () => {
+    setupThemeToggle();
+  });
+
+  // 테마 복원
+  document.addEventListener('astro:after-swap', () => {
+    const savedTheme = localStorage.getItem('theme') || 'light';
+    document.documentElement.dataset.theme = savedTheme;
+  });
+</script>

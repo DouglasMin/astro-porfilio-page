@@ -1,0 +1,324 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+---
+
+<BaseLayout title="About - 민동익 (Douglas)" description="민동익(Douglas)의 소개와 연락처 정보">
+  <div class="about-page">
+    <section class="about-hero">
+      <div class="container">
+        <div class="hero-content">
+          <div class="profile-image animate-fade-in">
+            <div class="image-placeholder">
+              <span>👨‍💻</span>
+            </div>
+          </div>
+          
+          <div class="hero-text animate-fade-in">
+            <h1>민동익 (Dongik Min)</h1>
+            <h2 class="subtitle">Douglas</h2>
+            <p class="intro">
+              사용자 중심의 웹 경험을 만드는 것을 좋아하는 풀스택 개발자입니다. 
+              깨끗한 코드와 최신 기술 스택을 활용하여 효율적이고 확장 가능한 
+              애플리케이션을 개발합니다.
+            </p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="skills-detail-section">
+      <div class="container">
+        <h2 class="section-title">전문 분야</h2>
+        
+        <div class="skills-detail-grid">
+          <div class="skill-detail-card">
+            <div class="skill-icon">🎨</div>
+            <h3>프론트엔드</h3>
+            <p>
+              사용자 인터페이스와 경험을 최우선으로 생각합니다. 
+              React, Vue, Astro 등 최신 프레임워크를 활용하여 
+              성능이 뛰어나고 접근성이 좋은 웹 애플리케이션을 만듭니다.
+            </p>
+            <div class="skill-icons-display">
+              <img src="https://skillicons.dev/icons?i=react,vue,ts,astro,tailwind" alt="Frontend Skills" />
+            </div>
+          </div>
+
+          <div class="skill-detail-card">
+            <div class="skill-icon">⚙️</div>
+            <h3>백엔드</h3>
+            <p>
+              확장 가능하고 안전한 서버 아키텍처를 설계합니다. 
+              RESTful API와 GraphQL을 활용하여 효율적인 
+              데이터 처리와 통신을 구현합니다.
+            </p>
+            <div class="skill-icons-display">
+              <img src="https://skillicons.dev/icons?i=nodejs,python,postgres,mongodb,graphql" alt="Backend Skills" />
+            </div>
+          </div>
+
+          <div class="skill-detail-card">
+            <div class="skill-icon">☁️</div>
+            <h3>DevOps & Cloud</h3>
+            <p>
+              지속적 통합 및 배포(CI/CD)를 통해 개발 프로세스를 
+              자동화합니다. AWS, Docker 등을 활용하여 
+              안정적인 인프라를 구축합니다.
+            </p>
+            <div class="skill-icons-display">
+              <img src="https://skillicons.dev/icons?i=docker,aws,git,githubactions,vercel" alt="DevOps Skills" />
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="contact-section" id="contact">
+      <div class="container">
+        <h2 class="section-title">연락하기</h2>
+        
+        <div class="contact-content">
+          <div class="contact-info">
+            <p class="contact-description">
+              새로운 프로젝트나 협업 기회에 대해 이야기 나누고 싶으시다면 
+              언제든지 연락 주세요!
+            </p>
+            
+            <div class="contact-methods">
+              <a href="mailto:dongik@example.com" class="contact-link">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/>
+                  <polyline points="22,6 12,13 2,6"/>
+                </svg>
+                <span>dongik@example.com</span>
+              </a>
+
+              <a href="https://github.com" target="_blank" rel="noopener noreferrer" class="contact-link">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
+                  <path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/>
+                </svg>
+                <span>GitHub</span>
+              </a>
+            </div>
+          </div>
+
+          <div class="cta-box">
+            <h3>프로젝트 의뢰하기</h3>
+            <p>함께 멋진 것을 만들어봅시다!</p>
+            <a href="mailto:dongik@example.com" class="btn btn-primary">
+              이메일 보내기
+            </a>
+          </div>
+        </div>
+      </div>
+    </section>
+  </div>
+</BaseLayout>
+
+<style>
+  .about-hero {
+    padding: var(--spacing-2xl) 0;
+    background: linear-gradient(135deg, rgba(59, 130, 246, 0.05), rgba(139, 92, 246, 0.05));
+  }
+
+  .hero-content {
+    display: grid;
+    grid-template-columns: 300px 1fr;
+    gap: var(--spacing-xl);
+    align-items: center;
+  }
+
+  .profile-image {
+    display: flex;
+    justify-content: center;
+  }
+
+  .image-placeholder {
+    width: 250px;
+    height: 250px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, var(--color-accent), #8b5cf6);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 8rem;
+    box-shadow: var(--shadow-lg);
+  }
+
+  .hero-text h1 {
+    font-size: clamp(2.5rem, 5vw, 3.5rem);
+    margin-bottom: var(--spacing-sm);
+  }
+
+  .subtitle {
+    font-size: 1.5rem;
+    color: var(--color-accent);
+    font-weight: 600;
+    font-style: italic;
+    margin-bottom: var(--spacing-md);
+  }
+
+  .intro {
+    font-size: 1.25rem;
+    line-height: 1.8;
+    color: var(--color-text-secondary);
+  }
+
+  .skills-detail-section {
+    padding: var(--spacing-2xl) 0;
+  }
+
+  .section-title {
+    text-align: center;
+    font-size: 2.5rem;
+    margin-bottom: var(--spacing-xl);
+  }
+
+  .skills-detail-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: var(--spacing-xl);
+  }
+
+  .skill-detail-card {
+    background-color: var(--color-bg-secondary);
+    padding: var(--spacing-xl);
+    border-radius: var(--radius-lg);
+    border: 1px solid var(--color-border);
+    transition: all var(--transition-base);
+  }
+
+  .skill-detail-card:hover {
+    transform: translateY(-4px);
+    box-shadow: var(--shadow-lg);
+    border-color: var(--color-accent);
+  }
+
+  .skill-icon {
+    font-size: 3rem;
+    margin-bottom: var(--spacing-md);
+  }
+
+  .skill-detail-card h3 {
+    margin-bottom: var(--spacing-md);
+  }
+
+  .skill-detail-card > p {
+    margin-bottom: var(--spacing-md);
+    line-height: 1.7;
+  }
+
+  .skill-icons-display {
+    display: flex;
+    justify-content: center;
+    margin-top: var(--spacing-md);
+  }
+
+  .skill-icons-display img {
+    width: 100%;
+    max-width: 300px;
+  }
+
+  .contact-section {
+    padding: var(--spacing-2xl) 0;
+    background-color: var(--color-bg-secondary);
+  }
+
+  .contact-content {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: var(--spacing-xl);
+    max-width: 1000px;
+    margin: 0 auto;
+  }
+
+  .contact-description {
+    font-size: 1.125rem;
+    margin-bottom: var(--spacing-lg);
+    line-height: 1.7;
+  }
+
+  .contact-methods {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-md);
+  }
+
+  .contact-link {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-md);
+    padding: var(--spacing-md);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    transition: all var(--transition-fast);
+    color: var(--color-text);
+  }
+
+  .contact-link:hover {
+    border-color: var(--color-accent);
+    background-color: var(--color-bg-secondary);
+    transform: translateX(4px);
+  }
+
+  .contact-link svg {
+    color: var(--color-accent);
+  }
+
+  .cta-box {
+    background: linear-gradient(135deg, rgba(59, 130, 246, 0.1), rgba(139, 92, 246, 0.1));
+    padding: var(--spacing-xl);
+    border-radius: var(--radius-lg);
+    border: 1px solid var(--color-border);
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+  }
+
+  .cta-box h3 {
+    font-size: 2rem;
+    margin-bottom: var(--spacing-md);
+  }
+
+  .cta-box p {
+    font-size: 1.125rem;
+    margin-bottom: var(--spacing-lg);
+  }
+
+  .btn {
+    display: inline-block;
+    padding: 1rem 2rem;
+    border-radius: var(--radius-lg);
+    font-weight: 600;
+    transition: all var(--transition-base);
+  }
+
+  .btn-primary {
+    background: linear-gradient(135deg, var(--color-accent), #8b5cf6);
+    color: white;
+    box-shadow: var(--shadow-md);
+  }
+
+  .btn-primary:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-lg);
+  }
+
+  @media (max-width: 768px) {
+    .hero-content {
+      grid-template-columns: 1fr;
+      text-align: center;
+    }
+
+    .image-placeholder {
+      width: 200px;
+      height: 200px;
+      font-size: 6rem;
+    }
+
+    .contact-content {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>

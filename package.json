@@ -1,0 +1,22 @@
+{
+  "name": "portfolio",
+  "type": "module",
+  "version": "1.0.0",
+  "scripts": {
+    "dev": "astro dev",
+    "build": "astro check && astro build",
+    "preview": "astro preview"
+  },
+  "dependencies": {
+    "@notionhq/client": "^2.2.15",
+    "astro": "^5.0.0",
+    "dotenv": "^17.2.3",
+    "marked": "^17.0.1",
+    "notion-astro-loader": "^0.4.0",
+    "notion-to-md": "^3.1.1"
+  },
+  "devDependencies": {
+    "@astrojs/check": "^0.9.0",
+    "typescript": "^5.6.0"
+  }
+}
