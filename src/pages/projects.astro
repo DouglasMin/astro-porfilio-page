@@ -1,9 +1,10 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
 import { getCollection } from 'astro:content';
+import type { CollectionEntry } from 'astro:content';
 
 const allProjects = (await getCollection('projects'))
-  .sort((a, b) => a.data.order - b.data.order);
+  .sort((a: CollectionEntry<'projects'>, b: CollectionEntry<'projects'>) => a.data.order - b.data.order);
 ---
 
 <BaseLayout title="프로젝트 - Douglas" description="민동익(Douglas)이 작업한 다양한 프로젝트들">
@@ -17,7 +18,7 @@ const allProjects = (await getCollection('projects'))
   <section class="projects-section">
     <div class="container">
       <div class="projects-grid">
-        {allProjects.map((project, index) => (
+        {allProjects.map((project: CollectionEntry<'projects'>, index: number) => (
           <article class="project-card" style={`animation-delay: ${index * 0.1}s`}>
             <div class="project-image">
               <img src={project.data.image.src} alt={project.data.title} loading="lazy" />
@@ -40,7 +41,7 @@ const allProjects = (await getCollection('projects'))
               <p>{project.data.description}</p>
               
               <div class="project-tags">
-                {project.data.tags.map(tag => (
+                {project.data.tags.map((tag: string) => (
                   <span class="tag">{tag}</span>
                 ))}
               </div>

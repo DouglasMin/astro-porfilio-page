@@ -41,7 +41,7 @@ let htmlContent = await marked.parse(post.content);
 // Mermaid 코드 블록을 특별히 표시 (대소문자 구분 없이, HTML 엔티티 디코딩 포함)
 htmlContent = htmlContent.replace(
   /<pre><code class="language-mermaid">([\s\S]*?)<\/code><\/pre>/gi,
-  (match, code) => {
+  (_match, code) => {
     const decodedCode = decodeHTMLEntities(code.trim());
     return `<div class="mermaid-diagram"><div class="mermaid" data-mermaid-code="${decodeHTMLEntities(code.trim()).replace(/"/g, '&quot;')}">${decodedCode}</div></div>`;
   }
@@ -50,7 +50,7 @@ htmlContent = htmlContent.replace(
 // 혹시 class 없이 나온 경우도 처리 (Notion이 다르게 변환할 수 있음)
 htmlContent = htmlContent.replace(
   /<pre><code>```mermaid\n([\s\S]*?)```<\/code><\/pre>/gi,
-  (match, code) => {
+  (_match, code) => {
     const decodedCode = decodeHTMLEntities(code.trim());
     return `<div class="mermaid-diagram"><div class="mermaid" data-mermaid-code="${decodeHTMLEntities(code.trim()).replace(/"/g, '&quot;')}">${decodedCode}</div></div>`;
   }
@@ -148,6 +148,12 @@ htmlContent = htmlContent.replace(
 </BaseLayout>
 
 <script>
+  // Mermaid 타입 선언 (CDN에서 로드됨)
+  declare const mermaid: {
+    initialize: (config: any) => void;
+    render: (id: string, code: string) => Promise<{ svg: string }>;
+  } | undefined;
+
   function initBlogPost() {
     // Mermaid 초기화 및 렌더링
     if (typeof mermaid !== 'undefined') {

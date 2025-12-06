@@ -17,3 +17,4 @@ draft: false
 3. **Content Collections**: 타입 안전한 콘텐츠 관리
 4. **Islands Architecture**: 필요한 곳에만 인터랙티비티 추가
 
+

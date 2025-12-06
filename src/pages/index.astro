@@ -1,10 +1,11 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
 import { getCollection } from 'astro:content';
+import type { CollectionEntry } from 'astro:content';
 
 const featuredProjects = (await getCollection('projects'))
-  .filter(project => project.data.featured)
-  .sort((a, b) => a.data.order - b.data.order)
+  .filter((project: CollectionEntry<'projects'>) => project.data.featured)
+  .sort((a: CollectionEntry<'projects'>, b: CollectionEntry<'projects'>) => a.data.order - b.data.order)
   .slice(0, 3);
 ---
 
@@ -110,7 +111,7 @@ const featuredProjects = (await getCollection('projects'))
         </div>
         
         <div class="projects-grid">
-          {featuredProjects.map((project, index) => (
+          {featuredProjects.map((project: CollectionEntry<'projects'>, index: number) => (
             <article class="project-card" style={`animation-delay: ${index * 0.1}s`}>
               <div class="project-image">
                 <img src={project.data.image.src} alt={project.data.title} loading="lazy" />
@@ -119,7 +120,7 @@ const featuredProjects = (await getCollection('projects'))
                 <h3>{project.data.title}</h3>
                 <p>{project.data.description}</p>
                 <div class="project-tags">
-                  {project.data.tags.map(tag => (
+                  {project.data.tags.map((tag: string) => (
                     <span class="tag">{tag}</span>
                   ))}
                 </div>

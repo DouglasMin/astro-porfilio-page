@@ -1,5 +1,21 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
+import { getCollection } from 'astro:content';
+import type { CollectionEntry } from 'astro:content';
+import { marked } from 'marked';
+
+// 한국어 업무 경력 데이터만 가져오기 (work 타입만)
+const experiences = await Promise.all(
+  (await getCollection('experience'))
+    .filter((exp: CollectionEntry<'experience'>) => 
+      exp.data.lang === 'ko' && exp.data.type === 'work'
+    )
+    .sort((a: CollectionEntry<'experience'>, b: CollectionEntry<'experience'>) => a.data.order - b.data.order)
+    .map(async (exp: CollectionEntry<'experience'>) => ({
+      ...exp,
+      htmlContent: await marked.parse(exp.body)
+    }))
+);
 ---
 
 <BaseLayout title="About - 민동익 (Douglas)" description="민동익(Douglas)의 소개와 연락처 정보">
@@ -69,6 +85,35 @@ import BaseLayout from '../layouts/BaseLayout.astro';
               <img src="https://skillicons.dev/icons?i=docker,aws,git,githubactions,vercel" alt="DevOps Skills" />
             </div>
           </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="experience-section">
+      <div class="container">
+        <h2 class="section-title">💼 경력</h2>
+        
+        <div class="timeline">
+          {experiences.map((exp, index: number) => (
+            <article class="timeline-item" style={`animation-delay: ${index * 0.1}s`}>
+              <div class="timeline-marker"></div>
+              <div class="timeline-content">
+                <div class="exp-header">
+                  <div>
+                    <h3>{exp.data.title}</h3>
+                    <p class="company">{exp.data.company}</p>
+                    {exp.data.role && <p class="role">{exp.data.role}</p>}
+                  </div>
+                  <span class="period">{exp.data.period}</span>
+                </div>
+                <div class="exp-body" set:html={exp.htmlContent} />
+              </div>
+            </article>
+          ))}
+        </div>
+        
+        <div class="view-all-link-container">
+          <a href="/experience" class="view-all-btn">전체 경력 & 프로젝트 보기 →</a>
         </div>
       </div>
     </section>
@@ -305,6 +350,166 @@ import BaseLayout from '../layouts/BaseLayout.astro';
     box-shadow: var(--shadow-lg);
   }
 
+  /* Experience Section */
+  .experience-section {
+    padding: var(--spacing-2xl) 0;
+    background-color: var(--color-bg);
+  }
+
+  .timeline {
+    position: relative;
+    max-width: 900px;
+    margin: 0 auto;
+    padding-left: 2rem;
+  }
+
+  .timeline::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    width: 2px;
+    background: linear-gradient(180deg, var(--color-accent), #8b5cf6);
+  }
+
+  .timeline-item {
+    position: relative;
+    margin-bottom: var(--spacing-xl);
+    animation: fadeInUp 0.6s ease-out forwards;
+    opacity: 0;
+  }
+
+  .timeline-marker {
+    position: absolute;
+    left: -2.5rem;
+    top: 0.5rem;
+    width: 16px;
+    height: 16px;
+    border-radius: 50%;
+    background: var(--color-accent);
+    border: 3px solid var(--color-bg);
+    box-shadow: 0 0 0 3px var(--color-accent);
+    z-index: 1;
+  }
+
+  .timeline-content {
+    background: var(--color-bg-secondary);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-lg);
+    padding: var(--spacing-lg);
+    transition: all var(--transition-base);
+  }
+
+  .timeline-content:hover {
+    transform: translateX(8px);
+    box-shadow: var(--shadow-lg);
+    border-color: var(--color-accent);
+  }
+
+  .exp-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: var(--spacing-md);
+    margin-bottom: var(--spacing-md);
+    padding-bottom: var(--spacing-md);
+    border-bottom: 1px solid var(--color-border);
+  }
+
+  .exp-header h3 {
+    font-size: 1.5rem;
+    margin-bottom: 0.5rem;
+    color: var(--color-text);
+  }
+
+  .company {
+    color: var(--color-accent);
+    font-weight: 600;
+    font-size: 1.125rem;
+    margin-bottom: 0.25rem;
+  }
+
+  .role {
+    color: var(--color-text-secondary);
+    font-size: 0.9375rem;
+    font-style: italic;
+  }
+
+  .period {
+    background: var(--color-bg);
+    padding: 0.5rem 1rem;
+    border-radius: var(--radius-md);
+    font-size: 0.875rem;
+    font-weight: 600;
+    color: var(--color-accent);
+    white-space: nowrap;
+    border: 1px solid var(--color-border);
+  }
+
+  .exp-body {
+    color: var(--color-text-secondary);
+    line-height: 1.8;
+  }
+
+  .exp-body :global(h2) {
+    font-size: 1.125rem;
+    margin-top: 1rem;
+    margin-bottom: 0.75rem;
+    color: var(--color-text);
+  }
+
+  .exp-body :global(ul) {
+    list-style: none;
+    padding-left: 0;
+  }
+
+  .exp-body :global(li) {
+    position: relative;
+    padding-left: 1.5rem;
+    margin-bottom: 0.5rem;
+  }
+
+  .exp-body :global(li::before) {
+    content: '▸';
+    position: absolute;
+    left: 0;
+    color: var(--color-accent);
+    font-weight: bold;
+  }
+
+  .view-all-link-container {
+    text-align: center;
+    margin-top: var(--spacing-xl);
+  }
+
+  .view-all-btn {
+    display: inline-block;
+    padding: 1rem 2rem;
+    background: linear-gradient(135deg, var(--color-accent), #8b5cf6);
+    color: white;
+    border-radius: var(--radius-lg);
+    font-weight: 600;
+    transition: all var(--transition-base);
+    box-shadow: var(--shadow-md);
+  }
+
+  .view-all-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-lg);
+  }
+
+  @keyframes fadeInUp {
+    from {
+      opacity: 0;
+      transform: translateY(30px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
   @media (max-width: 768px) {
     .hero-content {
       grid-template-columns: 1fr;
@@ -319,6 +524,26 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 
     .contact-content {
       grid-template-columns: 1fr;
+    }
+
+    .timeline {
+      padding-left: 1.5rem;
+    }
+
+    .timeline-marker {
+      left: -2rem;
+    }
+
+    .exp-header {
+      flex-direction: column;
+    }
+
+    .period {
+      align-self: flex-start;
+    }
+
+    .timeline-content:hover {
+      transform: translateX(4px);
     }
   }
 </style>
