@@ -5,7 +5,8 @@
   "scripts": {
     "dev": "astro dev",
     "build": "astro check && astro build",
-    "preview": "astro preview"
+    "preview": "astro preview",
+    "deploy": "bash ./scripts/deploy-amplify.sh"
   },
   "dependencies": {
     "@notionhq/client": "^2.2.15",
