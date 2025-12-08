@@ -28,10 +28,10 @@ function decodeHTMLEntities(text: string): string {
 
 // 디버깅: Mermaid 블록 확인
 if (import.meta.env.DEV && post.content.includes('mermaid')) {
-  console.log('🔍 Mermaid 블록이 감지되었습니다. 원본 마크다운:');
+  // console.log('🔍 Mermaid 블록이 감지되었습니다. 원본 마크다운:');
   const mermaidMatch = post.content.match(/```mermaid[\s\S]*?```/gi);
   if (mermaidMatch) {
-    console.log(mermaidMatch[0]);
+    // console.log(mermaidMatch[0]);
   }
 }
 
@@ -187,7 +187,7 @@ htmlContent = htmlContent.replace(
       const mermaidElements = document.querySelectorAll('.mermaid:not([data-processed])');
       
       if (mermaidElements.length > 0) {
-        console.log(`🔍 Found ${mermaidElements.length} Mermaid diagrams to render`);
+        //console.log(`🔍 Found ${mermaidElements.length} Mermaid diagrams to render`);
         
         mermaidElements.forEach(async (element, index) => {
           try {
@@ -195,7 +195,7 @@ htmlContent = htmlContent.replace(
             // data 속성에서 원본 코드 가져오기, 없으면 textContent 사용
             let graphDefinition = element.getAttribute('data-mermaid-code') || element.textContent?.trim() || '';
             
-            console.log(`📊 Rendering diagram ${index + 1}:`, graphDefinition.substring(0, 50) + '...');
+            //console.log(`📊 Rendering diagram ${index + 1}:`, graphDefinition.substring(0, 50) + '...');
             
             if (graphDefinition) {
               // 혹시 원본 코드에 data 속성이 없었다면 저장
@@ -206,10 +206,10 @@ htmlContent = htmlContent.replace(
               const { svg } = await mermaid.render(id, graphDefinition);
               element.innerHTML = svg;
               element.setAttribute('data-processed', 'true');
-              console.log(`✅ Diagram ${index + 1} rendered successfully`);
+              //console.log(`✅ Diagram ${index + 1} rendered successfully`);
             }
           } catch (error) {
-            console.error('❌ Mermaid rendering error:', error);
+            //console.error('❌ Mermaid rendering error:', error);
             element.innerHTML = `<div style="color: #ef4444; padding: 1rem; border: 1px solid #ef4444; border-radius: 8px; background: rgba(239, 68, 68, 0.1);">
               <strong>⚠️ 다이어그램 렌더링 오류</strong><br>
               <small style="font-family: monospace;">${error.message || error}</small><br>
@@ -321,7 +321,7 @@ htmlContent = htmlContent.replace(
             button.classList.remove('copied');
           }, 2000);
         } catch (err) {
-          console.error('Failed to copy:', err);
+          //console.error('Failed to copy:', err);
         }
       });
       
@@ -345,7 +345,7 @@ htmlContent = htmlContent.replace(
             copyLinkBtn.innerHTML = originalHTML;
           }, 2000);
         } catch (err) {
-          console.error('Failed to copy link:', err);
+          //console.error('Failed to copy link:', err);
         }
       });
     }
@@ -404,7 +404,7 @@ htmlContent = htmlContent.replace(
                 diagram.innerHTML = svg;
               }
             } catch (error) {
-              console.error('Mermaid theme update error:', error);
+              //console.error('Mermaid theme update error:', error);
             }
           });
         }

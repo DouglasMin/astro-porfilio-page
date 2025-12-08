@@ -3,10 +3,26 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 import { getCollection } from 'astro:content';
 import type { CollectionEntry } from 'astro:content';
 
-const featuredProjects = (await getCollection('projects'))
-  .filter((project: CollectionEntry<'projects'>) => project.data.featured)
-  .sort((a: CollectionEntry<'projects'>, b: CollectionEntry<'projects'>) => a.data.order - b.data.order)
+const allProjects = await getCollection('projects');
+
+const featuredProjects = allProjects
+  .filter(
+    (project: CollectionEntry<'projects'>) =>
+      project.data.featured && project.data.category !== 'client',
+  )
+  .sort(
+    (a: CollectionEntry<'projects'>, b: CollectionEntry<'projects'>) =>
+      a.data.order - b.data.order,
+  )
   .slice(0, 3);
+
+const clientProjects = allProjects
+  .filter((project: CollectionEntry<'projects'>) => project.data.category === 'client')
+  .sort(
+    (a: CollectionEntry<'projects'>, b: CollectionEntry<'projects'>) =>
+      a.data.order - b.data.order,
+  )
+  .slice(0, 2);
 ---
 
 <BaseLayout title="민동익 (Douglas) - 개발자 포트폴리오" description="민동익(Douglas)의 풀스택 개발자 포트폴리오 웹사이트">
@@ -115,6 +131,46 @@ const featuredProjects = (await getCollection('projects'))
             <article class="project-card" style={`animation-delay: ${index * 0.1}s`}>
               <div class="project-image">
                 <img src={project.data.image.src} alt={project.data.title} loading="lazy" />
+              </div>
+              <div class="project-content">
+                <h3>{project.data.title}</h3>
+                <p>{project.data.description}</p>
+                <div class="project-tags">
+                  {project.data.tags.map((tag: string) => (
+                    <span class="tag">{tag}</span>
+                  ))}
+                </div>
+              </div>
+            </article>
+          ))}
+        </div>
+      </div>
+    </section>
+  )}
+
+  <!-- Client Portfolio Preview -->
+  {clientProjects.length > 0 && (
+    <section class="client-preview-section">
+      <div class="container">
+        <div class="section-header">
+          <h2 class="section-title">클라이언트 포트폴리오 (외주)</h2>
+          <a href="/projects" class="view-all-link">전체 보기 →</a>
+        </div>
+
+        <div class="projects-grid">
+          {clientProjects.map((project: CollectionEntry<'projects'>, index: number) => (
+            <article class="project-card client-project-card" style={`animation-delay: ${index * 0.1}s`}>
+              <div class={`project-image ${project.data.demo ? 'project-image-iframe' : ''}`}>
+                {project.data.demo ? (
+                  <iframe
+                    src={project.data.demo}
+                    title={`${project.data.title} 미리보기`}
+                    loading="lazy"
+                    class="project-preview-frame"
+                  />
+                ) : (
+                  <img src={project.data.image.src} alt={project.data.title} loading="lazy" />
+                )}
               </div>
               <div class="project-content">
                 <h3>{project.data.title}</h3>
@@ -421,6 +477,11 @@ const featuredProjects = (await getCollection('projects'))
     padding: var(--spacing-2xl) 0;
   }
 
+  .client-preview-section {
+    padding: var(--spacing-xl) 0 var(--spacing-2xl);
+    background: radial-gradient(circle at top left, rgba(56, 189, 248, 0.08), transparent 55%);
+  }
+
   .section-header {
     display: flex;
     justify-content: space-between;
@@ -458,11 +519,19 @@ const featuredProjects = (await getCollection('projects'))
     box-shadow: var(--shadow-lg);
   }
 
+  .client-project-card {
+    border-color: rgba(56, 189, 248, 0.6);
+  }
+
   .project-image {
     width: 100%;
     height: 200px;
     overflow: hidden;
     background-color: var(--color-border);
+  }
+
+  .project-image-iframe {
+    background-color: var(--color-bg);
   }
 
   .project-image img {
@@ -474,6 +543,13 @@ const featuredProjects = (await getCollection('projects'))
 
   .project-card:hover .project-image img {
     transform: scale(1.05);
+  }
+
+  .project-preview-frame {
+    width: 100%;
+    height: 100%;
+    border: none;
+    pointer-events: none;
   }
 
   .project-content {

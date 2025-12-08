@@ -13,6 +13,7 @@ const projects = defineCollection({
     github: z.string().url().optional(),
     demo: z.string().url().optional(),
     order: z.number().default(999),
+    category: z.enum(['personal', 'client']).default('personal'),
   }),
 });
 
