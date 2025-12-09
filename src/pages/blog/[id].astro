@@ -246,6 +246,9 @@ htmlContent = htmlContent.replace(
       if (headings.length === 0) {
         if (tocSidebar) tocSidebar.style.display = 'none';
       } else {
+        // 기존 TOC 내용 초기화 (중복 방지)
+        toc.innerHTML = '';
+        
         headings.forEach((heading, index) => {
           const id = `heading-${index}`;
           heading.id = id;
