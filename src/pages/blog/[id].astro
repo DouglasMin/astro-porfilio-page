@@ -286,6 +286,7 @@ htmlContent = htmlContent.replace(
     document.querySelectorAll('.prose pre').forEach((pre) => {
       // 이미 버튼이 있으면 스킵
       if (pre.querySelector('.code-copy-btn')) return;
+      if (!pre.parentNode) return;
       
       const wrapper = document.createElement('div');
       wrapper.className = 'code-block-wrapper';
@@ -562,11 +563,13 @@ htmlContent = htmlContent.replace(
 
   @media (min-width: 1024px) {
     .toc-sidebar {
-      display: block;
+      display: flex;
       position: sticky;
+      top: 0;
+      height: 100vh;
       align-self: flex-start;
-      top: 2rem;
-      max-height: calc(100vh - 4rem);
+      align-items: center; /* 스크롤 중에도 TOC를 화면 중앙에 유지 */
+      max-height: 100vh;
     }
   }
 
