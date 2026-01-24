@@ -2,16 +2,15 @@
 import BaseLayout from '../../../layouts/BaseLayout.astro';
 import { getNotionBlogPosts } from '../../../lib/notion';
 
-const PAGE_SIZE = 5;
-
 export async function getStaticPaths() {
+  const pageSize = 5;
   const allPosts = await getNotionBlogPosts();
-  const totalPages = Math.max(1, Math.ceil(allPosts.length / PAGE_SIZE));
+  const totalPages = Math.max(1, Math.ceil(allPosts.length / pageSize));
 
   return Array.from({ length: totalPages }, (_, index) => {
     const page = index + 1;
-    const start = (page - 1) * PAGE_SIZE;
-    const end = start + PAGE_SIZE;
+    const start = (page - 1) * pageSize;
+    const end = start + pageSize;
     return {
       params: { page: String(page) },
       props: {
@@ -23,6 +22,7 @@ export async function getStaticPaths() {
   });
 }
 
+const pageSize = 5;
 const { page, totalPages, posts } = Astro.props;
 const currentPage = Number(page);
 ---
@@ -49,7 +49,7 @@ const currentPage = Number(page);
               style={`animation-delay: ${index * 0.1}s`}
             >
               <a href={`/blog/${post.id}`} class="post-link">
-                <div class="post-number">{String((currentPage - 1) * PAGE_SIZE + index + 1).padStart(2, '0')}</div>
+                <div class="post-number">{String((currentPage - 1) * pageSize + index + 1).padStart(2, '0')}</div>
                 <div class="post-content">
                   <div class="post-header">
                     <time datetime={post.publishedAt.toISOString()} class="post-date">
