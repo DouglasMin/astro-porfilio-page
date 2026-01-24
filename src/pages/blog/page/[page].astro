@@ -1,12 +1,30 @@
 ---
-import BaseLayout from '../../layouts/BaseLayout.astro';
-import { getNotionBlogPosts } from '../../lib/notion';
+import BaseLayout from '../../../layouts/BaseLayout.astro';
+import { getNotionBlogPosts } from '../../../lib/notion';
 
 const PAGE_SIZE = 5;
-const allPosts = await getNotionBlogPosts();
-const totalPages = Math.max(1, Math.ceil(allPosts.length / PAGE_SIZE));
-const currentPage = 1;
-const posts = allPosts.slice(0, PAGE_SIZE);
+
+export async function getStaticPaths() {
+  const allPosts = await getNotionBlogPosts();
+  const totalPages = Math.max(1, Math.ceil(allPosts.length / PAGE_SIZE));
+
+  return Array.from({ length: totalPages }, (_, index) => {
+    const page = index + 1;
+    const start = (page - 1) * PAGE_SIZE;
+    const end = start + PAGE_SIZE;
+    return {
+      params: { page: String(page) },
+      props: {
+        page,
+        totalPages,
+        posts: allPosts.slice(start, end),
+      },
+    };
+  });
+}
+
+const { page, totalPages, posts } = Astro.props;
+const currentPage = Number(page);
 ---
 
 <BaseLayout title="블로그 - Douglas" description="민동익(Douglas)의 개발과 기술에 대한 생각">
@@ -31,7 +49,7 @@ const posts = allPosts.slice(0, PAGE_SIZE);
               style={`animation-delay: ${index * 0.1}s`}
             >
               <a href={`/blog/${post.id}`} class="post-link">
-                <div class="post-number">{String(index + 1).padStart(2, '0')}</div>
+                <div class="post-number">{String((currentPage - 1) * PAGE_SIZE + index + 1).padStart(2, '0')}</div>
                 <div class="post-content">
                   <div class="post-header">
                     <time datetime={post.publishedAt.toISOString()} class="post-date">
@@ -74,7 +92,7 @@ const posts = allPosts.slice(0, PAGE_SIZE);
 
       {totalPages > 1 && (
         <nav class="pagination" aria-label="Pagination">
-          <a class:list={["page-link", { disabled: currentPage <= 1 }]} href={undefined}>
+          <a class:list={["page-link", { disabled: currentPage <= 1 }]} href={currentPage <= 1 ? undefined : (currentPage === 2 ? '/blog' : `/blog/page/${currentPage - 1}`)}>
             이전
           </a>
           <div class="page-numbers">
@@ -200,7 +218,7 @@ const posts = allPosts.slice(0, PAGE_SIZE);
     color: inherit;
     padding: var(--spacing-lg);
     position: relative;
-    z-index: 10; /* 링크를 최상위로! */
+    z-index: 10;
     text-decoration: none;
   }
 

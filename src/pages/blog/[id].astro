@@ -420,6 +420,21 @@ htmlContent = htmlContent.replace(
     attributes: true,
     attributeFilter: ['data-theme']
   });
+
+  // 목록으로 돌아가기: 기존 스크롤 위치 복원
+  const LIST_URL_KEY = 'blogListUrl';
+  const RESTORE_KEY = 'blogListRestore';
+  const backLinks = document.querySelectorAll('.back-link, .back-to-list');
+  backLinks.forEach((link) => {
+    link.addEventListener('click', (event) => {
+      const listUrl = sessionStorage.getItem(LIST_URL_KEY);
+      if (listUrl) {
+        event.preventDefault();
+        sessionStorage.setItem(RESTORE_KEY, '1');
+        window.location.href = listUrl;
+      }
+    });
+  });
 </script>
 
 <style>
@@ -1128,4 +1143,3 @@ htmlContent = htmlContent.replace(
     }
   }
 </style>
-
