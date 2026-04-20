@@ -12,7 +12,7 @@ const currentPath = Astro.url.pathname;
 <header class="header">
   <nav class="nav container">
     <a href="/" class="logo">
-      <span class="logo-text">Dongik's Portfolio</span>
+      <span class="logo-text">Douglas.AI</span>
     </a>
 
     <div class="nav-links">
@@ -58,7 +58,8 @@ const currentPath = Astro.url.pathname;
 
   :global([data-theme="dark"]) .header {
     background-color: rgba(15, 23, 42, 0.95);
-    border-bottom: 1px solid #334155;
+    border-bottom: none;
+    box-shadow: 0 1px 10px rgba(6, 182, 212, 0.2);
   }
 
   .nav {
@@ -80,14 +81,7 @@ const currentPath = Astro.url.pathname;
   }
 
   .logo-text {
-    background: linear-gradient(135deg, #3b82f6, #8b5cf6);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
-  }
-
-  :global([data-theme="dark"]) .logo-text {
-    background: linear-gradient(135deg, #60a5fa, #c084fc);
+    background: linear-gradient(135deg, var(--color-ai-cyan), var(--color-ai-blue), var(--color-ai-purple), var(--color-ai-magenta));
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
@@ -129,7 +123,7 @@ const currentPath = Astro.url.pathname;
     left: 0;
     width: 0;
     height: 2px;
-    background: linear-gradient(90deg, #3b82f6, #8b5cf6);
+    background: linear-gradient(90deg, var(--color-ai-cyan), var(--color-ai-purple));
     transition: width 0.3s;
   }
 

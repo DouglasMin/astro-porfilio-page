@@ -1,5 +1,6 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
+import NeuralBackground from '../components/NeuralBackground.astro';
 import { getCollection } from 'astro:content';
 import type { CollectionEntry } from 'astro:content';
 
@@ -28,60 +29,28 @@ const clientProjects = allProjects
 <BaseLayout title="민동익 (Douglas) - 개발자 포트폴리오" description="민동익(Douglas)의 풀스택 개발자 포트폴리오 웹사이트">
   <!-- Hero Section -->
   <section class="hero">
+    <NeuralBackground />
     <div class="container">
-      <div class="hero-content animate-fade-in">
-        <h1 class="hero-title">
+      <div class="hero-content">
+        <h1 class="hero-title hero-stagger" style="--stagger-index: 0">
           안녕하세요! 👋<br />
           저는 <span class="gradient-text">민동익</span> 입니다
         </h1>
-        <p class="hero-description">
+        <p class="hero-description hero-stagger" style="--stagger-index: 1">
           사용자 경험을 최우선으로 생각하는 풀스택 개발자입니다.<br />
           사용자가 필요로 하는 애플리케이션을 빠르게 MVP로 만들어<br />
           시장 반응을 확인합니다.
         </p>
-        <p class="hero-subtitle">
+        <p class="hero-subtitle hero-stagger" style="--stagger-index: 2">
           Dongik Min (Douglas)
         </p>
-        <div class="hero-cta">
+        <div class="typewriter-wrapper hero-stagger" style="--stagger-index: 3">
+          <span id="typewriter-text" class="typewriter-text" aria-live="polite"></span>
+          <span class="typewriter-cursor" aria-hidden="true">|</span>
+        </div>
+        <div class="hero-cta hero-stagger" style="--stagger-index: 4">
           <a href="/projects" class="btn btn-primary">프로젝트 보기</a>
           <a href="/about" class="btn btn-secondary">소개 보기</a>
-        </div>
-      </div>
-      
-      <div class="hero-visual animate-fade-in">
-        <div class="laptop-container">
-          <div class="laptop">
-            <div class="laptop-screen">
-              <div class="code-editor">
-                <div class="editor-header">
-                  <span class="dot red"></span>
-                  <span class="dot yellow"></span>
-                  <span class="dot green"></span>
-                </div>
-                <div class="code-content">
-                  <div class="code-line">
-                    <span class="code-keyword">const</span>
-                    <span class="code-text"> developer = </span>
-                    <span class="code-string">"Douglas"</span>
-                  </div>
-                  <div class="code-line delay-1">
-                    <span class="code-keyword">function</span>
-                    <span class="code-text"> build</span>
-                    <span class="code-bracket">()</span>
-                    <span class="code-text"> {</span>
-                  </div>
-                  <div class="code-line delay-2">
-                    <span class="code-text">  return </span>
-                    <span class="code-string">"✨ Magic"</span>
-                  </div>
-                  <div class="code-line delay-3">
-                    <span class="code-text">}</span>
-                  </div>
-                </div>
-              </div>
-            </div>
-            <div class="laptop-base"></div>
-          </div>
         </div>
       </div>
     </div>
@@ -94,21 +63,21 @@ const clientProjects = allProjects
       
       <div class="skills-grid">
         <div class="skill-category">
-          <h3>Frontend</h3>
+          <h3><span class="skill-icon" aria-hidden="true">🧠</span> Frontend</h3>
           <div class="skill-icons-grid">
             <img src="https://skillicons.dev/icons?i=react,vue,ts,astro,tailwind" alt="Frontend Skills" />
           </div>
         </div>
         
         <div class="skill-category">
-          <h3>Backend</h3>
+          <h3><span class="skill-icon" aria-hidden="true">⚡</span> Backend</h3>
           <div class="skill-icons-grid">
             <img src="https://skillicons.dev/icons?i=nodejs,python,postgres,mongodb,graphql" alt="Backend Skills" />
           </div>
         </div>
         
         <div class="skill-category">
-          <h3>DevOps & Tools</h3>
+          <h3><span class="skill-icon" aria-hidden="true">🔗</span> DevOps & Tools</h3>
           <div class="skill-icons-grid">
             <img src="https://skillicons.dev/icons?i=docker,aws,git,github,vercel" alt="DevOps Skills" />
           </div>
@@ -128,8 +97,11 @@ const clientProjects = allProjects
         
         <div class="projects-grid">
           {featuredProjects.map((project: CollectionEntry<'projects'>, index: number) => (
-            <article class="project-card" style={`animation-delay: ${index * 0.1}s`}>
+            <article class="project-card" style={`animation-delay: ${index * 0.1}s`} data-fade-up>
               <div class="project-image">
+                {(project.data.tags.includes('AI') || project.data.tags.includes('Machine Learning')) && (
+                  <span class="ai-badge">🤖 AI Project</span>
+                )}
                 <img src={project.data.image.src} alt={project.data.title} loading="lazy" />
               </div>
               <div class="project-content">
@@ -159,8 +131,11 @@ const clientProjects = allProjects
 
         <div class="projects-grid">
           {clientProjects.map((project: CollectionEntry<'projects'>, index: number) => (
-            <article class="project-card client-project-card" style={`animation-delay: ${index * 0.1}s`}>
+            <article class="project-card client-project-card" style={`animation-delay: ${index * 0.1}s`} data-fade-up>
               <div class={`project-image ${project.data.demo ? 'project-image-iframe' : ''}`}>
+                {(project.data.tags.includes('AI') || project.data.tags.includes('Machine Learning')) && (
+                  <span class="ai-badge">🤖 AI Project</span>
+                )}
                 {project.data.demo ? (
                   <iframe
                     src={project.data.demo}
@@ -201,22 +176,41 @@ const clientProjects = allProjects
 </BaseLayout>
 
 <style>
+  /* Hero Section — single-column centered layout */
   .hero {
+    position: relative;
     padding: var(--spacing-2xl) 0;
     min-height: 80vh;
     display: flex;
     align-items: center;
+    overflow: hidden;
+  }
+
+  /* Mobile fallback: static gradient when canvas is hidden */
+  @media (max-width: 767px) {
+    .hero {
+      background: linear-gradient(
+        135deg,
+        rgba(6, 182, 212, 0.08),
+        rgba(59, 130, 246, 0.06),
+        rgba(139, 92, 246, 0.04),
+        rgba(236, 72, 153, 0.02)
+      );
+    }
   }
 
   .hero .container {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: var(--spacing-xl);
+    position: relative;
+    z-index: 1;
+    display: flex;
+    flex-direction: column;
     align-items: center;
+    text-align: center;
   }
 
   .hero-content {
     z-index: 1;
+    max-width: 720px;
   }
 
   .hero-title {
@@ -225,8 +219,9 @@ const clientProjects = allProjects
     line-height: 1.1;
   }
 
+  /* AI_Gradient text fill on the name */
   .gradient-text {
-    background: linear-gradient(135deg, var(--color-accent), #8b5cf6, #ec4899);
+    background: linear-gradient(135deg, var(--color-ai-cyan), var(--color-ai-blue), var(--color-ai-purple), var(--color-ai-magenta));
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
@@ -240,16 +235,65 @@ const clientProjects = allProjects
 
   .hero-subtitle {
     font-size: 1.125rem;
-    margin-bottom: var(--spacing-lg);
+    margin-bottom: var(--spacing-md);
     color: var(--color-accent);
     font-weight: 600;
     font-style: italic;
   }
 
+  /* Typewriter */
+  .typewriter-wrapper {
+    margin-bottom: var(--spacing-lg);
+    min-height: 2rem;
+    font-size: 1.5rem;
+    font-weight: 600;
+    color: var(--color-ai-cyan);
+  }
+
+  .typewriter-text {
+    background: linear-gradient(135deg, var(--color-ai-cyan), var(--color-ai-blue), var(--color-ai-purple));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  .typewriter-cursor {
+    display: inline-block;
+    color: var(--color-ai-cyan);
+    animation: blink-cursor 1s step-end infinite;
+    margin-left: 2px;
+    font-weight: 300;
+  }
+
+  @keyframes blink-cursor {
+    0%, 50% { opacity: 1; }
+    51%, 100% { opacity: 0; }
+  }
+
+  /* Staggered fade-in: each element delays by index * 200ms */
+  .hero-stagger {
+    opacity: 0;
+    animation: heroFadeIn 0.6s ease-out forwards;
+    animation-delay: calc(var(--stagger-index, 0) * 200ms);
+  }
+
+  @keyframes heroFadeIn {
+    from {
+      opacity: 0;
+      transform: translateY(20px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  /* CTA buttons */
   .hero-cta {
     display: flex;
     gap: var(--spacing-md);
     flex-wrap: wrap;
+    justify-content: center;
   }
 
   .btn {
@@ -262,14 +306,14 @@ const clientProjects = allProjects
   }
 
   .btn-primary {
-    background: linear-gradient(135deg, var(--color-accent), #8b5cf6);
+    background: linear-gradient(135deg, var(--color-ai-cyan), var(--color-ai-purple));
     color: white;
     box-shadow: var(--shadow-md);
   }
 
   .btn-primary:hover {
     transform: translateY(-2px);
-    box-shadow: var(--shadow-lg);
+    box-shadow: 0 0 20px rgba(6, 182, 212, 0.4), 0 0 40px rgba(139, 92, 246, 0.2);
   }
 
   .btn-secondary {
@@ -279,136 +323,9 @@ const clientProjects = allProjects
   }
 
   .btn-secondary:hover {
-    border-color: var(--color-accent);
-    color: var(--color-accent);
-  }
-
-  /* Laptop Animation */
-  .hero-visual {
-    position: relative;
-    height: 400px;
-    display: flex;
-    align-items: center;
-    justify-content: flex-end;
-    padding-right: 50px;
-  }
-
-  .laptop-container {
-    perspective: 1000px;
-    animation: float 4s ease-in-out infinite;
-  }
-
-  @keyframes float {
-    0%, 100% { transform: translateY(0); }
-    50% { transform: translateY(-20px); }
-  }
-
-  .laptop {
-    width: 320px;
-  }
-
-  .laptop-screen {
-    background: linear-gradient(135deg, #1e293b, #0f172a);
-    border: 8px solid #334155;
-    border-bottom: none;
-    border-radius: 12px 12px 0 0;
-    padding: 12px;
-    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
-  }
-
-  :global([data-theme="light"]) .laptop-screen {
-    background: linear-gradient(135deg, #f1f5f9, #e2e8f0);
-    border-color: #cbd5e1;
-  }
-
-  .laptop-base {
-    width: 360px;
-    height: 12px;
-    background: linear-gradient(to bottom, #475569, #334155);
-    border-radius: 0 0 8px 8px;
-    margin: 0 auto;
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
-  }
-
-  :global([data-theme="light"]) .laptop-base {
-    background: linear-gradient(to bottom, #94a3b8, #cbd5e1);
-  }
-
-  .code-editor {
-    background: #1e293b;
-    border-radius: 8px;
-    overflow: hidden;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
-  }
-
-  :global([data-theme="light"]) .code-editor {
-    background: #ffffff;
-  }
-
-  .editor-header {
-    background: #0f172a;
-    padding: 8px 12px;
-    display: flex;
-    gap: 6px;
-  }
-
-  :global([data-theme="light"]) .editor-header {
-    background: #f1f5f9;
-  }
-
-  .dot {
-    width: 12px;
-    height: 12px;
-    border-radius: 50%;
-  }
-
-  .dot.red { background: #ef4444; }
-  .dot.yellow { background: #eab308; }
-  .dot.green { background: #22c55e; }
-
-  .code-content {
-    padding: 16px;
-    font-family: 'Courier New', monospace;
-    font-size: 13px;
-    line-height: 1.6;
-  }
-
-  .code-line {
-    opacity: 0;
-    animation: fadeInLine 0.5s ease-out forwards;
-  }
-
-  .code-line.delay-1 { animation-delay: 0.5s; }
-  .code-line.delay-2 { animation-delay: 1s; }
-  .code-line.delay-3 { animation-delay: 1.5s; }
-
-  @keyframes fadeInLine {
-    from {
-      opacity: 0;
-      transform: translateX(-10px);
-    }
-    to {
-      opacity: 1;
-      transform: translateX(0);
-    }
-  }
-
-  .code-keyword { color: #c084fc; font-weight: 600; }
-  .code-text { color: #e2e8f0; }
-  :global([data-theme="light"]) .code-text { color: #334155; }
-  .code-string { color: #34d399; }
-  .code-bracket { color: #60a5fa; }
-
-  .code-line:last-child::after {
-    content: '|';
-    color: #60a5fa;
-    animation: blink 1s step-end infinite;
-    margin-left: 2px;
-  }
-
-  @keyframes blink {
-    0%, 50% { opacity: 1; }
-    51%, 100% { opacity: 0; }
+    border-color: var(--color-ai-cyan);
+    color: var(--color-ai-cyan);
+    box-shadow: 0 0 15px rgba(6, 182, 212, 0.3), 0 0 30px rgba(59, 130, 246, 0.15);
   }
 
   /* Skills Section */
@@ -428,17 +345,47 @@ const clientProjects = allProjects
     gap: var(--spacing-lg);
   }
 
+  /* Animated gradient border via @property */
+  @property --gradient-angle {
+    syntax: "<angle>";
+    initial-value: 0deg;
+    inherits: false;
+  }
+
   .skill-category {
-    background-color: var(--color-bg);
     padding: var(--spacing-lg);
     border-radius: var(--radius-lg);
-    border: 1px solid var(--color-border);
+    border: 2px solid transparent;
+    background-origin: border-box;
+    background-clip: padding-box, border-box;
+    background-image:
+      linear-gradient(var(--color-bg), var(--color-bg)),
+      conic-gradient(from var(--gradient-angle), #06b6d4, #3b82f6, #8b5cf6, #ec4899, #06b6d4);
+    animation: rotate-gradient 3s linear infinite;
+    box-shadow: 0 0 8px 1px rgba(6, 182, 212, 0.15);
+    transition: box-shadow var(--transition-base);
+  }
+
+  .skill-category:hover {
+    box-shadow: 0 0 16px 4px rgba(6, 182, 212, 0.3), 0 0 30px 4px rgba(139, 92, 246, 0.15);
+  }
+
+  @keyframes rotate-gradient {
+    to { --gradient-angle: 360deg; }
   }
 
   .skill-category h3 {
     margin-bottom: var(--spacing-md);
     color: var(--color-accent);
     text-align: center;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+  }
+
+  .skill-icon {
+    font-size: 1.25rem;
   }
 
   .skill-icons-grid {
@@ -510,13 +457,34 @@ const clientProjects = allProjects
     overflow: hidden;
     border: 1px solid var(--color-border);
     transition: all var(--transition-base);
-    animation: fadeIn 0.6s ease-out forwards;
     opacity: 0;
+    transform: translateY(30px);
   }
 
-  .project-card:hover {
+  .project-card.fade-up-visible {
+    opacity: 1;
+    transform: translateY(0);
+    transition: opacity 0.6s ease-out, transform 0.6s ease-out, box-shadow var(--transition-base), border-color var(--transition-base);
+  }
+
+  [data-theme="dark"] .project-card:hover {
+    transform: translateY(-8px);
+    box-shadow: 0 0 20px rgba(6, 182, 212, 0.3), 0 0 40px rgba(139, 92, 246, 0.15);
+    border-color: var(--color-ai-cyan);
+  }
+
+  [data-theme="dark"] .project-card.fade-up-visible:hover {
+    transform: translateY(-8px);
+  }
+
+  :root .project-card:hover,
+  :not([data-theme="dark"]) .project-card:hover {
     transform: translateY(-8px);
     box-shadow: var(--shadow-lg);
+  }
+
+  :not([data-theme="dark"]) .project-card.fade-up-visible:hover {
+    transform: translateY(-8px);
   }
 
   .client-project-card {
@@ -524,6 +492,7 @@ const clientProjects = allProjects
   }
 
   .project-image {
+    position: relative;
     width: 100%;
     height: 200px;
     overflow: hidden;
@@ -568,21 +537,69 @@ const clientProjects = allProjects
   }
 
   .tag {
-    background-color: var(--color-bg);
+    background: linear-gradient(135deg, rgba(6, 182, 212, 0.1), rgba(139, 92, 246, 0.1));
     color: var(--color-text-secondary);
     padding: 0.25rem 0.75rem;
     border-radius: var(--radius-sm);
     font-size: 0.75rem;
-    border: 1px solid var(--color-border);
+    border: 1px solid rgba(6, 182, 212, 0.2);
   }
 
-  @media (max-width: 768px) {
-    .hero .container {
-      grid-template-columns: 1fr;
-    }
-    
-    .hero-visual {
-      display: none;
-    }
+  .ai-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.25rem;
+    position: absolute;
+    top: 0.75rem;
+    left: 0.75rem;
+    background: linear-gradient(135deg, rgba(6, 182, 212, 0.9), rgba(139, 92, 246, 0.9));
+    color: white;
+    padding: 0.375rem 0.75rem;
+    border-radius: var(--radius-md);
+    font-size: 0.7rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    z-index: 2;
+    animation: pulse-glow 2s ease-in-out infinite;
   }
+
+  @keyframes pulse-glow {
+    0%, 100% { box-shadow: 0 0 8px rgba(6, 182, 212, 0.4); }
+    50% { box-shadow: 0 0 20px rgba(6, 182, 212, 0.7), 0 0 30px rgba(139, 92, 246, 0.3); }
+  }
+
 </style>
+
+<script>
+  import { initTypewriter } from '../scripts/typewriter';
+
+  const el = document.getElementById('typewriter-text');
+  if (el) {
+    const tw = initTypewriter({
+      element: el,
+      phrases: ['Building with AI', 'Full-Stack Developer', 'Machine Learning Enthusiast'],
+      typeSpeed: 50,
+      deleteSpeed: 30,
+      pauseDuration: 2000,
+    });
+    tw.start();
+  }
+
+  // IntersectionObserver for fade-up animation on project cards
+  const fadeUpCards = document.querySelectorAll('[data-fade-up]');
+  if (fadeUpCards.length > 0) {
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            entry.target.classList.add('fade-up-visible');
+            observer.unobserve(entry.target);
+          }
+        });
+      },
+      { threshold: 0.1 }
+    );
+    fadeUpCards.forEach((card) => observer.observe(card));
+  }
+</script>

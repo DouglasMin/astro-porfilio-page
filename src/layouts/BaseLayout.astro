@@ -1,6 +1,7 @@
 ---
 import { ClientRouter } from 'astro:transitions';
 import Navigation from '../components/Navigation.astro';
+import ParticleBackground from '../components/ParticleBackground.astro';
 import '../styles/global.css';
 
 interface Props {
@@ -26,6 +27,7 @@ const { title, description = '민동익 (Douglas) - 개발자 포트폴리오' }
     </script>
   </head>
   <body>
+    <ParticleBackground />
     <Navigation />
     <main>
       <slot />
