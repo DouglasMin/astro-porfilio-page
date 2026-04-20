@@ -1,69 +1,36 @@
 ---
 import BaseLayout from '../../layouts/BaseLayout.astro';
-import { getNotionBlogPosts } from '../../lib/notion';
-import { marked } from 'marked';
+import { getCollection, render, type CollectionEntry } from 'astro:content';
+
+// Helper to extract plain text from Notion rich text arrays
+function richTextToPlainText(data: ReadonlyArray<{ plain_text: string }>): string {
+  return data.map((text) => text.plain_text).join('');
+}
 
 export async function getStaticPaths() {
-  const posts = await getNotionBlogPosts();
-  return posts.map(post => ({
-    params: { id: post.id },
-    props: { post },
+  const entries = await getCollection('blog');
+  return entries.map(entry => ({
+    params: { id: entry.id },
+    props: { entry },
   }));
 }
 
-const { post } = Astro.props;
+const { entry } = Astro.props as { entry: CollectionEntry<'blog'> };
 
-// HTML 엔티티 디코딩 함수
-function decodeHTMLEntities(text: string): string {
-  const entities: Record<string, string> = {
-    '&amp;': '&',
-    '&lt;': '<',
-    '&gt;': '>',
-    '&quot;': '"',
-    '&#39;': "'",
-    '&nbsp;': ' ',
-  };
-  return text.replace(/&[#\w]+;/g, (entity) => entities[entity] || entity);
-}
+// Extract properties from notion-astro-loader entry
+const props = entry.data.properties;
+const title = richTextToPlainText(props.Title?.title ?? []);
+const description = richTextToPlainText(props.Description?.rich_text ?? []);
+const publishedAt = props['Published Date']?.date?.start
+  ? new Date(props['Published Date'].date.start)
+  : new Date();
+const tags = props.Tags?.multi_select?.map((t: { name: string }) => t.name) ?? [];
 
-// 디버깅: Mermaid 블록 확인
-if (import.meta.env.DEV && post.content.includes('mermaid')) {
-  // console.log('🔍 Mermaid 블록이 감지되었습니다. 원본 마크다운:');
-  const mermaidMatch = post.content.match(/```mermaid[\s\S]*?```/gi);
-  if (mermaidMatch) {
-    // console.log(mermaidMatch[0]);
-  }
-}
-
-// Markdown을 HTML로 변환
-let htmlContent = await marked.parse(post.content);
-
-// Mermaid 코드 블록을 특별히 표시 (대소문자 구분 없이, HTML 엔티티 디코딩 포함)
-htmlContent = htmlContent.replace(
-  /<pre><code class="language-mermaid">([\s\S]*?)<\/code><\/pre>/gi,
-  (_match, code) => {
-    const decodedCode = decodeHTMLEntities(code.trim());
-    return `<div class="mermaid-diagram"><div class="mermaid" data-mermaid-code="${decodeHTMLEntities(code.trim()).replace(/"/g, '&quot;')}">${decodedCode}</div></div>`;
-  }
-);
-
-// 혹시 class 없이 나온 경우도 처리 (Notion이 다르게 변환할 수 있음)
-htmlContent = htmlContent.replace(
-  /<pre><code>```mermaid\n([\s\S]*?)```<\/code><\/pre>/gi,
-  (_match, code) => {
-    const decodedCode = decodeHTMLEntities(code.trim());
-    return `<div class="mermaid-diagram"><div class="mermaid" data-mermaid-code="${decodeHTMLEntities(code.trim()).replace(/"/g, '&quot;')}">${decodedCode}</div></div>`;
-  }
-);
-
-// Notion callout 패턴 감지 및 변환 (마크다운에서 > 로 시작하는 blockquote를 callout으로 변환)
-htmlContent = htmlContent.replace(
-  /<blockquote>\s*<p>([💡🔔⚠️✅❌📌💭🎯])\s*(.*?)<\/p>\s*<\/blockquote>/gs,
-  '<div class="notion-callout"><div class="callout-icon">$1</div><div class="callout-text">$2</div></div>'
-);
+// Render the Notion content via the loader's built-in rendering
+const { Content } = await render(entry);
 ---
 
-<BaseLayout title={post.title} description={post.description}>
+<BaseLayout title={title} description={description}>
   <!-- Mermaid.js for diagrams -->
   <script is:inline src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
   
@@ -80,26 +47,26 @@ htmlContent = htmlContent.replace(
         </a>
 
         <div class="post-meta">
-          <time datetime={post.publishedAt.toISOString()}>
-            {post.publishedAt.toLocaleDateString('ko-KR', {
+          <time datetime={publishedAt.toISOString()}>
+            {publishedAt.toLocaleDateString('ko-KR', {
               year: 'numeric',
               month: 'long',
               day: 'numeric',
             })}
           </time>
           <span class="separator">•</span>
-          <span class="read-time">{Math.ceil(post.content.length / 500)}분 읽기</span>
+          <span class="read-time">읽기</span>
         </div>
         
-        <h1 class="post-title">{post.title}</h1>
+        <h1 class="post-title">{title}</h1>
         
-        {post.description && (
-          <p class="post-description">{post.description}</p>
+        {description && (
+          <p class="post-description">{description}</p>
         )}
         
-        {post.tags.length > 0 && (
+        {tags.length > 0 && (
           <div class="post-tags">
-            {post.tags.map(tag => (
+            {tags.map(tag => (
               <span class="tag">{tag}</span>
             ))}
           </div>
@@ -116,7 +83,9 @@ htmlContent = htmlContent.replace(
       </aside>
 
       <main class="post-body">
-        <div class="prose" set:html={htmlContent} />
+        <div class="prose">
+          <Content />
+        </div>
         
         <div class="post-author">
           <div class="author-avatar">👨‍💻</div>

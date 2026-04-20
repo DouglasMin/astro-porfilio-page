@@ -1,12 +1,29 @@
 ---
 import BaseLayout from '../../layouts/BaseLayout.astro';
-import { getNotionBlogPosts } from '../../lib/notion';
+import { getCollection } from 'astro:content';
 
 const PAGE_SIZE = 5;
-const allPosts = await getNotionBlogPosts();
-const totalPages = Math.max(1, Math.ceil(allPosts.length / PAGE_SIZE));
+const allEntries = await getCollection('blog');
+const totalPages = Math.max(1, Math.ceil(allEntries.length / PAGE_SIZE));
 const currentPage = 1;
-const posts = allPosts.slice(0, PAGE_SIZE);
+const entries = allEntries.slice(0, PAGE_SIZE);
+
+// Helper to extract plain text from Notion rich text arrays
+function richTextToPlainText(data: ReadonlyArray<{ plain_text: string }>): string {
+  return data.map((text) => text.plain_text).join('');
+}
+
+// Helper to extract data from notion-astro-loader entries
+function getPostData(entry: (typeof allEntries)[number]) {
+  const props = entry.data.properties;
+  const title = richTextToPlainText(props.Title?.title ?? []);
+  const description = richTextToPlainText(props.Description?.rich_text ?? []);
+  const publishedAt = props['Published Date']?.date?.start
+    ? new Date(props['Published Date'].date.start)
+    : new Date();
+  const tags = props.Tags?.multi_select?.map((t: { name: string }) => t.name) ?? [];
+  return { id: entry.id, title, description, publishedAt, tags };
+}
 ---
 
 <BaseLayout title="블로그 - Douglas" description="민동익(Douglas)의 개발과 기술에 대한 생각">
@@ -19,13 +36,15 @@ const posts = allPosts.slice(0, PAGE_SIZE);
 
   <section class="blog-section">
     <div class="container">
-      {posts.length === 0 ? (
+      {entries.length === 0 ? (
         <div class="no-posts">
           <p>Notion에서 블로그 포스트를 설정하세요.<br />Published ✅ 체크박스를 활성화하면 여기에 표시됩니다! 🚀</p>
         </div>
       ) : (
         <div class="posts-grid">
-          {posts.map((post, index) => (
+          {entries.map((entry, index) => {
+            const post = getPostData(entry);
+            return (
             <article 
               class="post-card"
               style={`animation-delay: ${index * 0.1}s`}
@@ -41,7 +60,6 @@ const posts = allPosts.slice(0, PAGE_SIZE);
                         day: 'numeric',
                       })}
                     </time>
-                    <span class="read-time">☕ {Math.ceil(post.content.length / 500)} min read</span>
                   </div>
                   
                   <h2 class="post-title">{post.title}</h2>
@@ -68,7 +86,8 @@ const posts = allPosts.slice(0, PAGE_SIZE);
                 </div>
               </a>
             </article>
-          ))}
+            );
+          })}
         </div>
       )}
 

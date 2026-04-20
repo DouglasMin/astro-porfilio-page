@@ -1,5 +1,6 @@
 import { defineCollection, z } from 'astro:content';
 import { glob } from 'astro/loaders';
+import { notionLoader } from 'notion-astro-loader';
 
 const projects = defineCollection({
   loader: glob({ pattern: '**/*.md', base: './src/content/projects' }),
@@ -18,13 +19,14 @@ const projects = defineCollection({
 });
 
 const blog = defineCollection({
-  loader: glob({ pattern: '**/*.md', base: './src/content/blog' }),
-  schema: ({ image }) => z.object({
-    title: z.string(),
-    description: z.string(),
-    publishedAt: z.date(),
-    tags: z.array(z.string()),
-    draft: z.boolean().default(false),
+  loader: notionLoader({
+    auth: import.meta.env.NOTION_TOKEN,
+    database_id: import.meta.env.NOTION_DATABASE_ID,
+    filter: {
+      property: 'Published',
+      checkbox: { equals: true },
+    },
+    sorts: [{ property: 'Published Date', direction: 'descending' }],
   }),
 });
 
