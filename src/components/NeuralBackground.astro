@@ -31,13 +31,12 @@
     display: none;
     position: absolute;
     inset: 0;
-    background: linear-gradient(
-      135deg,
-      rgba(6, 182, 212, 0.08),
-      rgba(59, 130, 246, 0.06),
-      rgba(139, 92, 246, 0.04),
-      rgba(236, 72, 153, 0.02)
-    );
+    background:
+      radial-gradient(circle at 50% 44%, rgba(6, 182, 212, 0.16), transparent 36%),
+      radial-gradient(circle at 22% 28%, rgba(59, 130, 246, 0.1), transparent 28%),
+      radial-gradient(circle at 82% 24%, rgba(139, 92, 246, 0.09), transparent 30%),
+      radial-gradient(circle at 76% 76%, rgba(236, 72, 153, 0.06), transparent 32%),
+      linear-gradient(135deg, rgba(6, 182, 212, 0.05), rgba(59, 130, 246, 0.04), rgba(139, 92, 246, 0.03));
   }
 
   /* Show fallback when canvas is hidden (no-canvas class added by script) */
@@ -80,8 +79,8 @@
 
     const nn = initNeuralNetwork({
       canvas,
-      nodeCount: 45, // within 30-60 range
-      connectionDistance: 150,
+      nodeCount: 54,
+      connectionDistance: 170,
       isDarkMode: isDark,
       colors: {
         cyan: '#06b6d4',
