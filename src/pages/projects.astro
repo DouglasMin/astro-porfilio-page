@@ -10,7 +10,10 @@ const clientProjects = allProjects.filter(
   (project: CollectionEntry<'projects'>) => project.data.category === 'client',
 );
 const personalProjects = allProjects.filter(
-  (project: CollectionEntry<'projects'>) => project.data.category !== 'client',
+  (project: CollectionEntry<'projects'>) => project.data.category === 'personal',
+);
+const portfolioProjects = allProjects.filter(
+  (project: CollectionEntry<'projects'>) => project.data.category === 'portfolio',
 );
 ---
 
@@ -70,6 +73,57 @@ const personalProjects = allProjects.filter(
                     {project.data.demo && (
                       <a href={project.data.demo} target="_blank" rel="noopener noreferrer" class="project-link">
                         Demo
+                      </a>
+                    )}
+                  </div>
+                </div>
+              </article>
+            ))}
+          </div>
+        </section>
+      )}
+
+      {portfolioProjects.length > 0 && (
+        <section class="projects-group">
+          <header class="projects-group-header">
+            <h2>포트폴리오</h2>
+          </header>
+          <div class="projects-grid">
+            {portfolioProjects.map((project: CollectionEntry<'projects'>, index: number) => (
+              <article class="project-card" style={`animation-delay: ${index * 0.1}s`} data-fade-up>
+                <div class="project-image">
+                  <img src={project.data.image.src} alt={project.data.title} loading="lazy" />
+                  {(project.data.tags.includes('AI') || project.data.tags.includes('Machine Learning')) && (
+                    <span class="ai-badge">🤖 AI Project</span>
+                  )}
+                  {project.data.featured && (
+                    <span class="featured-badge">Featured</span>
+                  )}
+                </div>
+
+                <div class="project-content">
+                  <div class="project-header">
+                    <h2>{project.data.title}</h2>
+                    <time datetime={project.data.publishedAt.toISOString()}>
+                      {project.data.publishedAt.toLocaleDateString('ko-KR', {
+                        year: 'numeric',
+                        month: 'long',
+                      })}
+                    </time>
+                  </div>
+
+                  <p>{project.data.description}</p>
+
+                  <div class="project-tags">
+                    {project.data.tags.map((tag: string) => (
+                      <span class="tag">{tag}</span>
+                    ))}
+                  </div>
+
+                  <div class="project-links">
+                    {project.data.github && (
+                      <a href={project.data.github} target="_blank" rel="noopener noreferrer" class="project-link">
+                        GitHub
                       </a>
                     )}
                   </div>
@@ -400,20 +454,23 @@ const personalProjects = allProjects.filter(
 </style>
 
 <script>
-  // IntersectionObserver for fade-up animation on project cards
-  const fadeUpCards = document.querySelectorAll('[data-fade-up]');
-  if (fadeUpCards.length > 0) {
-    const observer = new IntersectionObserver(
-      (entries) => {
-        entries.forEach((entry) => {
-          if (entry.isIntersecting) {
-            entry.target.classList.add('fade-up-visible');
-            observer.unobserve(entry.target);
-          }
-        });
-      },
-      { threshold: 0.1 }
-    );
-    fadeUpCards.forEach((card) => observer.observe(card));
+  function setupFadeUpObserver() {
+    const fadeUpCards = document.querySelectorAll('[data-fade-up]');
+    if (fadeUpCards.length > 0) {
+      const observer = new IntersectionObserver(
+        (entries) => {
+          entries.forEach((entry) => {
+            if (entry.isIntersecting) {
+              entry.target.classList.add('fade-up-visible');
+              observer.unobserve(entry.target);
+            }
+          });
+        },
+        { threshold: 0.1 }
+      );
+      fadeUpCards.forEach((card) => observer.observe(card));
+    }
   }
+
+  document.addEventListener('astro:page-load', setupFadeUpObserver);
 </script>

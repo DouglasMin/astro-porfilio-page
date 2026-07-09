@@ -574,32 +574,35 @@ const clientProjects = allProjects
 <script>
   import { initTypewriter } from '../scripts/typewriter';
 
-  const el = document.getElementById('typewriter-text');
-  if (el) {
-    const tw = initTypewriter({
-      element: el,
-      phrases: ['Building with AI', 'Full-Stack Developer', 'Machine Learning Enthusiast'],
-      typeSpeed: 50,
-      deleteSpeed: 30,
-      pauseDuration: 2000,
-    });
-    tw.start();
+  function setupIndexPage() {
+    const el = document.getElementById('typewriter-text');
+    if (el) {
+      const tw = initTypewriter({
+        element: el,
+        phrases: ['Building with AI', 'Full-Stack Developer', 'Machine Learning Enthusiast'],
+        typeSpeed: 50,
+        deleteSpeed: 30,
+        pauseDuration: 2000,
+      });
+      tw.start();
+    }
+
+    const fadeUpCards = document.querySelectorAll('[data-fade-up]');
+    if (fadeUpCards.length > 0) {
+      const observer = new IntersectionObserver(
+        (entries) => {
+          entries.forEach((entry) => {
+            if (entry.isIntersecting) {
+              entry.target.classList.add('fade-up-visible');
+              observer.unobserve(entry.target);
+            }
+          });
+        },
+        { threshold: 0.1 }
+      );
+      fadeUpCards.forEach((card) => observer.observe(card));
+    }
   }
 
-  // IntersectionObserver for fade-up animation on project cards
-  const fadeUpCards = document.querySelectorAll('[data-fade-up]');
-  if (fadeUpCards.length > 0) {
-    const observer = new IntersectionObserver(
-      (entries) => {
-        entries.forEach((entry) => {
-          if (entry.isIntersecting) {
-            entry.target.classList.add('fade-up-visible');
-            observer.unobserve(entry.target);
-          }
-        });
-      },
-      { threshold: 0.1 }
-    );
-    fadeUpCards.forEach((card) => observer.observe(card));
-  }
+  document.addEventListener('astro:page-load', setupIndexPage);
 </script>
