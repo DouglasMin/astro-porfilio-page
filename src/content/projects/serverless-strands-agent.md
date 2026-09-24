@@ -1,9 +1,8 @@
 ---
 title: "Serverless Strands Agent"
 description: "AWS AgentCore + Strands Agent 기반 서버리스 AI 챗봇. OAuth 3LO 통합(GitHub, Google Calendar, Notion)과 메모리 시스템"
-publishedAt: 2025-06-20T00:00:00.000Z
+publishedAt: 2026-06-20T00:00:00.000Z
 featured: true
-image: https://images.unsplash.com/photo-1677442136019-21780ecad995?w=800&h=600&fit=crop
 tags: ["AI", "AWS AgentCore", "Strands", "Terraform", "Serverless"]
 github: "https://github.com/DouglasMin/serverless-strands-agent"
 order: 7

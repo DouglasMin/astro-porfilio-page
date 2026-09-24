@@ -1,9 +1,8 @@
 ---
 title: "AI Financial Assistant"
 description: "AWS Bedrock AgentCore 기반 개인 AI 금융 어시스턴트. Bloomberg 터미널 스타일 UI와 LangGraph 리서치 서브그래프"
-publishedAt: 2025-05-01T00:00:00.000Z
+publishedAt: 2026-04-11T00:00:00.000Z
 featured: true
-image: https://images.unsplash.com/photo-1611974789855-9c2a0a7236a3?w=800&h=600&fit=crop
 tags: ["AI", "AWS AgentCore", "LangGraph", "React", "Finance"]
 github: "https://github.com/DouglasMin/finance-ai-app"
 order: 4

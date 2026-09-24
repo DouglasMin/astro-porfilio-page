@@ -1,0 +1,92 @@
+---
+import { formatDate, type PostSummary } from '../lib/blog';
+
+interface Props {
+  posts: PostSummary[];
+}
+
+const { posts } = Astro.props;
+const currentYear = new Date().getFullYear();
+---
+
+<ol class="post-list">
+  {posts.map((post) => (
+    <li>
+      <a href={`/blog/${post.id}`} class="post-row">
+        <time datetime={post.publishedAt.toISOString()} class:list={{ 'is-current-year': post.publishedAt.getFullYear() === currentYear }}>{formatDate(post.publishedAt)}</time>
+        <div class="post-main">
+          <h3 class="post-title">{post.title}</h3>
+          {post.description && <p class="post-description">{post.description}</p>}
+          {post.tags.length > 0 && (
+            <ul class="tag-list">
+              {post.tags.map((tag) => <li>{tag}</li>)}
+            </ul>
+          )}
+        </div>
+      </a>
+    </li>
+  ))}
+</ol>
+
+<style>
+  .post-list {
+    list-style: none;
+  }
+
+  .post-list > li + li {
+    border-top: 1px solid var(--color-border);
+  }
+
+  .post-row {
+    display: grid;
+    grid-template-columns: var(--col-meta) minmax(0, 1fr);
+    gap: var(--spacing-md);
+    padding: var(--spacing-md) var(--spacing-sm);
+    margin-inline: calc(var(--spacing-sm) * -1);
+    border-radius: var(--radius-md);
+    color: inherit;
+    transition: background-color var(--duration-fast) ease;
+  }
+
+  time {
+    color: var(--color-muted);
+    font-size: var(--text-sm);
+    font-variant-numeric: tabular-nums;
+    padding-top: 0.1rem;
+  }
+
+  /* This year's work is marked in the accent so recent activity reads at a glance */
+  .is-current-year {
+    color: var(--color-accent);
+    font-weight: 500;
+  }
+
+  .post-title {
+    font-size: var(--text-lg);
+    margin-bottom: var(--spacing-2xs);
+    transition: color var(--duration-fast) ease;
+  }
+
+  .post-description {
+    font-size: var(--text-sm);
+    margin-bottom: var(--spacing-xs);
+    max-width: 38rem;
+  }
+
+  @media (hover: hover) and (pointer: fine) {
+    .post-row:hover {
+      background-color: var(--color-accent-soft);
+    }
+
+    .post-row:hover .post-title {
+      color: var(--color-accent);
+    }
+  }
+
+  @media (max-width: 640px) {
+    .post-row {
+      grid-template-columns: 1fr;
+      gap: var(--spacing-2xs);
+    }
+  }
+</style>

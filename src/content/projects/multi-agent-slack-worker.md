@@ -1,9 +1,8 @@
 ---
 title: "Slack Multi-Agent System"
 description: "8개 전문 AI 에이전트가 Slack 멘션에 따라 작업을 분담하는 멀티에이전트 시스템 (코드 분석, 보안 스캔, 인프라 모니터링 등)"
-publishedAt: 2025-02-01T00:00:00.000Z
+publishedAt: 2026-03-25T00:00:00.000Z
 featured: false
-image: https://images.unsplash.com/photo-1531746790095-e6e66d0dcbb5?w=800&h=600&fit=crop
 tags: ["AI", "Multi-Agent", "Slack", "OpenAI", "AWS"]
 github: "https://github.com/DouglasMin/multi-agent-slack-worker"
 order: 9

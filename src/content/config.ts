@@ -1,6 +1,7 @@
 import { defineCollection, z } from 'astro:content';
 import { glob } from 'astro/loaders';
 import { notionLoader } from 'notion-astro-loader';
+import { rehypeNotionImages } from '../lib/rehype-notion-images';
 
 const projects = defineCollection({
   loader: glob({ pattern: '**/*.md', base: './src/content/projects' }),
@@ -9,7 +10,6 @@ const projects = defineCollection({
     description: z.string(),
     publishedAt: z.date(),
     featured: z.boolean().default(false),
-    image: z.string().url(),
     tags: z.array(z.string()),
     github: z.string().url().optional(),
     demo: z.string().url().optional(),
@@ -27,6 +27,8 @@ const blog = defineCollection({
       checkbox: { equals: true },
     },
     sorts: [{ property: 'Published Date', direction: 'descending' }],
+    // Swap expiring Notion S3 URLs for the WebP copies from scripts/sync-notion-images.ts
+    rehypePlugins: [rehypeNotionImages],
   }),
 });
 

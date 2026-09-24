@@ -1,9 +1,8 @@
 ---
 title: "AI Financial Briefing Bot (Slack)"
 description: "GPT-5 기반 Slack 금융 브리핑 봇. 정기 브리핑, Slash 커맨드 실시간 조회, 자유 대화 기능"
-publishedAt: 2025-03-01T00:00:00.000Z
+publishedAt: 2026-03-16T00:00:00.000Z
 featured: false
-image: https://images.unsplash.com/photo-1563986768609-322da13575f2?w=800&h=600&fit=crop
 tags: ["AI", "Slack", "OpenAI", "Serverless", "Finance"]
 github: "https://github.com/DouglasMin/slack-financial-bot"
 order: 8

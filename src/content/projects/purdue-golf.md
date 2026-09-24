@@ -3,7 +3,6 @@ title: "AI & UAV 기반 스마트 골프볼 회수 시스템"
 description: "드론과 AI 기술을 결합하여 골프장에서의 분실 골프공을 자동으로 탐지하고 수거하는 혁신적인 시스템"
 publishedAt: 2024-01-15T00:00:00.000Z
 featured: true
-image: https://images.unsplash.com/photo-1473163928189-364b2c4e1135?w=800&h=600&fit=crop
 tags: ["AI", "Computer Vision", "Drone", "Deep Learning", "Python"]
 github: "https://github.com/yourusername/golf-ball-detection"
 order: 1

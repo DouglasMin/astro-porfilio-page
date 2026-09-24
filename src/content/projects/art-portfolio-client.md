@@ -3,7 +3,6 @@ title: "미술 작품 포트폴리오 웹사이트 (클라이언트 외주)"
 description: "미술 작가의 작품과 전시 이력을 정갈하게 보여주는 반응형 포트폴리오 웹사이트"
 publishedAt: 2025-10-25T00:00:00.000Z
 featured: true
-image: https://images.unsplash.com/photo-1519710164239-da123dc03ef4?w=800&h=600&fit=crop
 tags: ["Web", "Portfolio", "Client Project", "UI/UX"]
 demo: "https://djohopmkj3fa6.cloudfront.net/"
 order: 3

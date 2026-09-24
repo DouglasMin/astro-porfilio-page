@@ -1,7 +1,6 @@
 ---
 import { ClientRouter } from 'astro:transitions';
 import Navigation from '../components/Navigation.astro';
-import ParticleBackground from '../components/ParticleBackground.astro';
 import '../styles/global.css';
 
 interface Props {
@@ -19,24 +18,66 @@ const { title, description = '민동익 (Douglas) - 개발자 포트폴리오' }
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="description" content={description} />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans+KR:wght@400;500;600;700&display=swap"
+    />
     <title>{title}</title>
     <ClientRouter />
     <script is:inline>
-      const savedTheme = localStorage.getItem('theme') || 'light';
-      document.documentElement.dataset.theme = savedTheme;
+      document.documentElement.dataset.theme = localStorage.getItem('theme') || 'light';
     </script>
   </head>
   <body>
-    <ParticleBackground />
     <Navigation />
     <main>
       <slot />
     </main>
-    <footer style="margin-top: 4rem; padding: 2rem 0; border-top: 1px solid var(--color-border); text-align: center;">
-      <div class="container">
-        <p style="color: var(--color-text-secondary);">&copy; {new Date().getFullYear()} Dongik Min (Douglas). All rights reserved.</p>
+    <footer class="site-footer">
+      <div class="container footer-inner">
+        <p>&copy; {new Date().getFullYear()} 민동익 Dongik Min</p>
+        <ul class="footer-links">
+          <li><a class="text-link" href="mailto:dongik20@naver.com">이메일</a></li>
+          <li><a class="text-link" href="https://github.com/DouglasMin" target="_blank" rel="noopener noreferrer">GitHub</a></li>
+        </ul>
       </div>
     </footer>
   </body>
 </html>
 
+<style>
+  .site-footer {
+    margin-top: var(--spacing-2xl);
+    padding-block: var(--spacing-lg);
+    border-top: 1px solid var(--color-border);
+    font-size: var(--text-sm);
+  }
+
+  .footer-inner {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: var(--spacing-sm);
+    flex-wrap: wrap;
+  }
+
+  .footer-inner p {
+    color: var(--color-muted);
+  }
+
+  .footer-links {
+    display: flex;
+    gap: var(--spacing-md);
+    list-style: none;
+  }
+
+  .footer-links a {
+    color: var(--color-text-secondary);
+  }
+
+  .footer-links a:hover {
+    color: var(--color-text);
+  }
+</style>

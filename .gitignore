@@ -6,3 +6,6 @@ node_modules/
 .image-cache.json
 .kiro/
 .superpowers/
+
+# Playwright MCP session logs
+.playwright-mcp/

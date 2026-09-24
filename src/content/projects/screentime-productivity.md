@@ -1,9 +1,8 @@
 ---
 title: "No Brainrot — iOS 스크린타임 앱"
 description: "6단계 캐릭터가 하루 사용량을 반영하는 디지털 웰빙 iOS 앱. 차단 없이 넛지로 습관 개선"
-publishedAt: 2025-06-15T00:00:00.000Z
+publishedAt: 2026-05-18T00:00:00.000Z
 featured: true
-image: https://images.unsplash.com/photo-1512941937669-90a1b58e7e9c?w=800&h=600&fit=crop
 tags: ["iOS", "Swift", "SwiftUI", "Digital Wellbeing"]
 github: "https://github.com/DouglasMin/screentime-productivity"
 order: 5

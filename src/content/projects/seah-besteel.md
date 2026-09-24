@@ -3,7 +3,6 @@ title: "압연재 출하공정 AI 기반 관리 시스템"
 description: "AI 기술을 활용하여 압연재 출하공정의 효율성을 극대화하는 스마트 팩토리 시스템"
 publishedAt: 2024-06-30T00:00:00.000Z
 featured: true
-image: https://images.unsplash.com/photo-1565043589221-1a6fd9ae45c7?w=800&h=600&fit=crop
 tags: ["AI", "Manufacturing", "Data Analytics", "React", "Python"]
 order: 2
 ---

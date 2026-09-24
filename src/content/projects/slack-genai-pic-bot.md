@@ -1,9 +1,8 @@
 ---
 title: "GenAI 이미지 스타일 변환 봇"
 description: "Slack에서 이미지를 첨부하고 스타일을 지정하면 AWS Bedrock으로 스타일 변환된 이미지를 생성하는 봇"
-publishedAt: 2025-04-15T00:00:00.000Z
+publishedAt: 2026-03-18T00:00:00.000Z
 featured: false
-image: https://images.unsplash.com/photo-1547891654-e66ed7ebb968?w=800&h=600&fit=crop
 tags: ["AI", "AWS Bedrock", "Image Generation", "Slack", "Serverless"]
 github: "https://github.com/DouglasMin/slack-genai-pic-bot"
 order: 10

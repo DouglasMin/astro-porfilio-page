@@ -1,5 +1,6 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
+import ExperienceList from '../components/ExperienceList.astro';
 import { getCollection } from 'astro:content';
 import type { CollectionEntry } from 'astro:content';
 import { marked } from 'marked';
@@ -7,565 +8,150 @@ import { marked } from 'marked';
 // 한국어 업무 경력 데이터만 가져오기 (work 타입만)
 const experiences = await Promise.all(
   (await getCollection('experience'))
-    .filter((exp: CollectionEntry<'experience'>) => 
+    .filter((exp: CollectionEntry<'experience'>) =>
       exp.data.lang === 'ko' && exp.data.type === 'work'
     )
     .sort((a: CollectionEntry<'experience'>, b: CollectionEntry<'experience'>) => a.data.order - b.data.order)
     .map(async (exp: CollectionEntry<'experience'>) => ({
-      ...exp,
-      htmlContent: await marked.parse(exp.body)
+      id: exp.id,
+      data: exp.data,
+      htmlContent: await marked.parse(exp.body ?? ''),
     }))
 );
+
+const areas = [
+  {
+    title: '프론트엔드',
+    description: '사용자 인터페이스와 경험을 최우선으로 생각합니다. 성능이 좋고 접근성을 갖춘 화면을 만듭니다.',
+    stack: ['React', 'Vue', 'TypeScript', 'Astro', 'Tailwind CSS'],
+  },
+  {
+    title: '백엔드',
+    description: '확장 가능하고 안전한 서버 구조를 설계합니다. REST와 GraphQL API로 데이터를 다룹니다.',
+    stack: ['Node.js', 'Python', 'PostgreSQL', 'MongoDB', 'GraphQL'],
+  },
+  {
+    title: '클라우드와 배포',
+    description: 'AWS 위에 인프라를 구성하고 CI/CD로 배포를 자동화합니다.',
+    stack: ['AWS', 'Docker', 'GitHub Actions', 'Vercel', 'Git'],
+  },
+];
 ---
 
-<BaseLayout title="About - 민동익 (Douglas)" description="민동익(Douglas)의 소개와 연락처 정보">
-  <div class="about-page">
-    <section class="about-hero">
-      <div class="container">
-        <div class="hero-content">
-          <div class="profile-image animate-fade-in">
-            <div class="image-placeholder">
-              <span>👨‍💻</span>
-            </div>
-          </div>
-          
-          <div class="hero-text animate-fade-in">
-            <h1>민동익 (Dongik Min)</h1>
-            <h2 class="subtitle">Douglas</h2>
-            <p class="intro">
-              사용자 중심의 웹 경험을 만드는 것을 좋아하는 풀스택 개발자입니다. 
-              깨끗한 코드와 최신 기술 스택을 활용하여 효율적이고 확장 가능한 
-              애플리케이션을 개발합니다.
-            </p>
-          </div>
-        </div>
-      </div>
-    </section>
+<BaseLayout title="About - 민동익 (Douglas)" description="민동익(Douglas)의 소개, 경력, 연락처">
+  <div class="container">
+    <header class="page-intro">
+      <h1>민동익 <span class="roman">Dongik Min</span></h1>
+      <p class="lead">
+        사용자 중심의 경험을 만드는 풀스택 개발자입니다. 아이디어를 빠르게 MVP로 만들어 시장 반응을 확인하고,
+        요즘은 AWS 위에서 AI 에이전트를 만드는 일에 집중하고 있습니다.
+      </p>
+    </header>
 
-    <section class="skills-detail-section">
-      <div class="container">
-        <h2 class="section-title">전문 분야</h2>
-        
-        <div class="skills-detail-grid">
-          <div class="skill-detail-card">
-            <div class="skill-icon">🎨</div>
-            <h3>프론트엔드</h3>
-            <p>
-              사용자 인터페이스와 경험을 최우선으로 생각합니다. 
-              React, Vue, Astro 등 최신 프레임워크를 활용하여 
-              성능이 뛰어나고 접근성이 좋은 웹 애플리케이션을 만듭니다.
-            </p>
-            <div class="skill-icons-display">
-              <img src="https://skillicons.dev/icons?i=react,vue,ts,astro,tailwind" alt="Frontend Skills" />
+    <div class="about-sections">
+      <section aria-labelledby="areas">
+        <header class="section-head">
+          <h2 id="areas">하는 일</h2>
+        </header>
+        <div class="areas">
+          {areas.map((area) => (
+            <div class="area">
+              <h3>{area.title}</h3>
+              <p>{area.description}</p>
+              <ul class="tag-list">
+                {area.stack.map((item) => <li>{item}</li>)}
+              </ul>
             </div>
-          </div>
-
-          <div class="skill-detail-card">
-            <div class="skill-icon">⚙️</div>
-            <h3>백엔드</h3>
-            <p>
-              확장 가능하고 안전한 서버 아키텍처를 설계합니다. 
-              RESTful API와 GraphQL을 활용하여 효율적인 
-              데이터 처리와 통신을 구현합니다.
-            </p>
-            <div class="skill-icons-display">
-              <img src="https://skillicons.dev/icons?i=nodejs,python,postgres,mongodb,graphql" alt="Backend Skills" />
-            </div>
-          </div>
-
-          <div class="skill-detail-card">
-            <div class="skill-icon">☁️</div>
-            <h3>DevOps & Cloud</h3>
-            <p>
-              지속적 통합 및 배포(CI/CD)를 통해 개발 프로세스를 
-              자동화합니다. AWS, Docker 등을 활용하여 
-              안정적인 인프라를 구축합니다.
-            </p>
-            <div class="skill-icons-display">
-              <img src="https://skillicons.dev/icons?i=docker,aws,git,githubactions,vercel" alt="DevOps Skills" />
-            </div>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <section class="experience-section">
-      <div class="container">
-        <h2 class="section-title">💼 경력</h2>
-        
-        <div class="timeline">
-          {experiences.map((exp, index: number) => (
-            <article class="timeline-item" style={`animation-delay: ${index * 0.1}s`}>
-              <div class="timeline-marker"></div>
-              <div class="timeline-content">
-                <div class="exp-header">
-                  <div>
-                    <h3>{exp.data.title}</h3>
-                    <p class="company">{exp.data.company}</p>
-                    {exp.data.role && <p class="role">{exp.data.role}</p>}
-                  </div>
-                  <span class="period">{exp.data.period}</span>
-                </div>
-                <div class="exp-body" set:html={exp.htmlContent} />
-              </div>
-            </article>
           ))}
         </div>
-        
-        <div class="view-all-link-container">
-          <a href="/experience" class="view-all-btn">전체 경력 & 프로젝트 보기 →</a>
-        </div>
-      </div>
-    </section>
+      </section>
 
-    <section class="contact-section" id="contact">
-      <div class="container">
-        <h2 class="section-title">연락하기</h2>
-        
-        <div class="contact-content">
-          <div class="contact-info">
-            <p class="contact-description">
-              새로운 프로젝트나 협업 기회에 대해 이야기 나누고 싶으시다면 
-              언제든지 연락 주세요!
-            </p>
-            
-            <div class="contact-methods">
-              <a href="mailto:dongik20@naver.com" class="contact-link">
-                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                  <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/>
-                  <polyline points="22,6 12,13 2,6"/>
-                </svg>
-                <span>dongik20@naver.com</span>
-              </a>
+      <section aria-labelledby="career">
+        <header class="section-head">
+          <h2 id="career">경력</h2>
+          <a class="text-link" href="/experience">프로젝트와 연구 경력까지 보기</a>
+        </header>
+        <ExperienceList items={experiences} />
+      </section>
 
-              <a href="https://github.com" target="_blank" rel="noopener noreferrer" class="contact-link">
-                <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
-                  <path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/>
-                </svg>
-                <span>GitHub</span>
-              </a>
-            </div>
-          </div>
-
-          <div class="cta-box">
-            <h3>프로젝트 의뢰하기</h3>
-            <a href="mailto:dongik20@naver.com" class="btn btn-primary">
-              이메일 보내기
-            </a>
+      <section id="contact" aria-labelledby="contact-title">
+        <header class="section-head">
+          <h2 id="contact-title">연락</h2>
+        </header>
+        <div class="contact">
+          <p>새 프로젝트나 협업 제안은 이메일로 보내주세요.</p>
+          <div class="contact-actions">
+            <a class="primary-button pressable" href="mailto:dongik20@naver.com">dongik20@naver.com</a>
+            <a class="text-link" href="https://github.com/DouglasMin" target="_blank" rel="noopener noreferrer">GitHub</a>
           </div>
         </div>
-      </div>
-    </section>
+      </section>
+    </div>
   </div>
 </BaseLayout>
 
 <style>
-  .about-hero {
-    padding: var(--spacing-2xl) 0;
-    background: linear-gradient(135deg, rgba(59, 130, 246, 0.05), rgba(139, 92, 246, 0.05));
+  .roman {
+    color: var(--color-muted);
+    font-weight: 400;
+    margin-left: var(--spacing-xs);
   }
 
-  .hero-content {
+  .lead {
+    font-size: var(--text-lg);
+    line-height: 1.6;
+    max-width: 38rem;
+  }
+
+  .about-sections {
     display: grid;
-    grid-template-columns: 300px 1fr;
-    gap: var(--spacing-xl);
-    align-items: center;
+    gap: var(--spacing-2xl);
   }
 
-  .profile-image {
-    display: flex;
-    justify-content: center;
+  .areas {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: var(--spacing-lg);
   }
 
-  .image-placeholder {
-    width: 250px;
-    height: 250px;
-    border-radius: 50%;
-    background: linear-gradient(135deg, var(--color-accent), #8b5cf6);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 8rem;
-    box-shadow: var(--shadow-lg);
+  .area h3 {
+    margin-bottom: var(--spacing-xs);
   }
 
-  .hero-text h1 {
-    font-size: clamp(2.5rem, 5vw, 3.5rem);
+  .area p {
+    font-size: var(--text-sm);
     margin-bottom: var(--spacing-sm);
   }
 
-  .subtitle {
-    font-size: 1.5rem;
-    color: var(--color-accent);
-    font-weight: 600;
-    font-style: italic;
+  .contact p {
+    max-width: 34rem;
     margin-bottom: var(--spacing-md);
   }
 
-  .intro {
-    font-size: 1.25rem;
-    line-height: 1.8;
-    color: var(--color-text-secondary);
-  }
-
-  .skills-detail-section {
-    padding: var(--spacing-2xl) 0;
-  }
-
-  .section-title {
-    text-align: center;
-    font-size: 2.5rem;
-    margin-bottom: var(--spacing-xl);
-  }
-
-  .skills-detail-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-    gap: var(--spacing-xl);
-  }
-
-  .skill-detail-card {
-    background-color: var(--color-bg-secondary);
-    padding: var(--spacing-xl);
-    border-radius: var(--radius-lg);
-    border: 1px solid var(--color-border);
-    transition: all var(--transition-base);
-  }
-
-  .skill-detail-card:hover {
-    transform: translateY(-4px);
-    box-shadow: var(--shadow-lg);
-    border-color: var(--color-accent);
-  }
-
-  .skill-icon {
-    font-size: 3rem;
-    margin-bottom: var(--spacing-md);
-  }
-
-  .skill-detail-card h3 {
-    margin-bottom: var(--spacing-md);
-  }
-
-  .skill-detail-card > p {
-    margin-bottom: var(--spacing-md);
-    line-height: 1.7;
-  }
-
-  .skill-icons-display {
-    display: flex;
-    justify-content: center;
-    margin-top: var(--spacing-md);
-  }
-
-  .skill-icons-display img {
-    width: 100%;
-    max-width: 300px;
-  }
-
-  .contact-section {
-    padding: var(--spacing-2xl) 0;
-    background-color: var(--color-bg-secondary);
-  }
-
-  .contact-content {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: var(--spacing-xl);
-    max-width: 1000px;
-    margin: 0 auto;
-  }
-
-  .contact-description {
-    font-size: 1.125rem;
-    margin-bottom: var(--spacing-lg);
-    line-height: 1.7;
-  }
-
-  .contact-methods {
-    display: flex;
-    flex-direction: column;
-    gap: var(--spacing-md);
-  }
-
-  .contact-link {
+  .contact-actions {
     display: flex;
     align-items: center;
     gap: var(--spacing-md);
-    padding: var(--spacing-md);
-    border: 1px solid var(--color-border);
-    border-radius: var(--radius-md);
-    transition: all var(--transition-fast);
-    color: var(--color-text);
+    flex-wrap: wrap;
   }
 
-  .contact-link:hover {
-    border-color: var(--color-accent);
-    background-color: var(--color-bg-secondary);
-    transform: translateX(4px);
-  }
-
-  .contact-link svg {
-    color: var(--color-accent);
-  }
-
-  .cta-box {
-    background: linear-gradient(135deg, rgba(59, 130, 246, 0.1), rgba(139, 92, 246, 0.1));
-    padding: var(--spacing-xl);
-    border-radius: var(--radius-lg);
-    border: 1px solid var(--color-border);
-    text-align: center;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-  }
-
-  .cta-box h3 {
-    font-size: 2rem;
-    margin-bottom: var(--spacing-md);
-  }
-
-  .cta-box p {
-    font-size: 1.125rem;
-    margin-bottom: var(--spacing-lg);
-  }
-
-  .btn {
+  .primary-button {
     display: inline-block;
-    padding: 1rem 2rem;
-    border-radius: var(--radius-lg);
-    font-weight: 600;
-    transition: all var(--transition-base);
-  }
-
-  .btn-primary {
-    background: linear-gradient(135deg, var(--color-accent), #8b5cf6);
-    color: white;
-    box-shadow: var(--shadow-md);
-  }
-
-  .btn-primary:hover {
-    transform: translateY(-2px);
-    box-shadow: var(--shadow-lg);
-  }
-
-  /* Experience Section */
-  .experience-section {
-    padding: var(--spacing-2xl) 0;
-    background-color: var(--color-bg);
-  }
-
-  .timeline {
-    position: relative;
-    max-width: 900px;
-    margin: 0 auto;
-    padding-left: 2rem;
-  }
-
-  .timeline::before {
-    content: '';
-    position: absolute;
-    left: 0;
-    top: 0;
-    bottom: 0;
-    width: 2px;
-    background: repeating-linear-gradient(
-      180deg,
-      var(--color-ai-cyan) 0px,
-      var(--color-ai-blue) 4px,
-      transparent 4px,
-      transparent 8px,
-      var(--color-ai-purple) 8px,
-      var(--color-ai-magenta) 12px,
-      transparent 12px,
-      transparent 16px
-    );
-    background-size: 2px 16px;
-    animation: timeline-pulse 3s ease-in-out infinite;
-  }
-
-  @keyframes timeline-pulse {
-    0%, 100% { opacity: 0.6; }
-    50% { opacity: 1; }
-  }
-
-  .timeline-item {
-    position: relative;
-    margin-bottom: var(--spacing-xl);
-    animation: fadeInUp 0.6s ease-out forwards;
-    opacity: 0;
-  }
-
-  .timeline-marker {
-    position: absolute;
-    left: -2.35rem;
-    top: 0.5rem;
-    width: 14px;
-    height: 14px;
-    border-radius: 0;
-    background: linear-gradient(135deg, var(--color-ai-cyan), var(--color-ai-purple));
-    border: 2px solid var(--color-bg);
-    box-shadow: 0 0 8px rgba(6, 182, 212, 0.5), 0 0 16px rgba(139, 92, 246, 0.2);
-    z-index: 1;
-    transform: rotate(45deg);
-    transition: box-shadow var(--transition-base);
-  }
-
-  .timeline-item:hover .timeline-marker {
-    box-shadow: 0 0 14px rgba(6, 182, 212, 0.8), 0 0 28px rgba(139, 92, 246, 0.4), 0 0 40px rgba(6, 182, 212, 0.2);
-  }
-
-  .timeline-content {
-    background: var(--color-bg-secondary);
-    border: 1px solid var(--color-border);
-    border-radius: var(--radius-lg);
-    padding: var(--spacing-lg);
-    transition: all var(--transition-base);
-  }
-
-  .timeline-content:hover {
-    transform: translateX(8px);
-    box-shadow: var(--shadow-lg);
-    border-color: var(--color-accent);
-  }
-
-  .exp-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: flex-start;
-    gap: var(--spacing-md);
-    margin-bottom: var(--spacing-md);
-    padding-bottom: var(--spacing-md);
-    border-bottom: 1px solid var(--color-border);
-  }
-
-  .exp-header h3 {
-    font-size: 1.5rem;
-    margin-bottom: 0.5rem;
-    color: var(--color-text);
-  }
-
-  .company {
-    color: var(--color-accent);
-    font-weight: 600;
-    font-size: 1.125rem;
-    margin-bottom: 0.25rem;
-  }
-
-  .role {
-    color: var(--color-text-secondary);
-    font-size: 0.9375rem;
-    font-style: italic;
-  }
-
-  .period {
-    background: var(--color-bg);
-    padding: 0.5rem 1rem;
+    padding: 0.65rem 1.1rem;
     border-radius: var(--radius-md);
-    font-size: 0.875rem;
-    font-weight: 600;
-    color: var(--color-accent);
-    white-space: nowrap;
-    border: 1px solid var(--color-border);
+    background: var(--color-accent);
+    color: var(--color-on-accent);
+    font-weight: 500;
   }
 
-  .exp-body {
-    color: var(--color-text-secondary);
-    line-height: 1.8;
+  .primary-button:hover {
+    color: var(--color-on-accent);
+    background: var(--color-accent-hover);
   }
 
-  .exp-body :global(h2) {
-    font-size: 1.125rem;
-    margin-top: 1rem;
-    margin-bottom: 0.75rem;
-    color: var(--color-text);
-  }
-
-  .exp-body :global(ul) {
-    list-style: none;
-    padding-left: 0;
-  }
-
-  .exp-body :global(li) {
-    position: relative;
-    padding-left: 1.5rem;
-    margin-bottom: 0.5rem;
-  }
-
-  .exp-body :global(li::before) {
-    content: '▸';
-    position: absolute;
-    left: 0;
-    color: var(--color-accent);
-    font-weight: bold;
-  }
-
-  .view-all-link-container {
-    text-align: center;
-    margin-top: var(--spacing-xl);
-  }
-
-  .view-all-btn {
-    display: inline-block;
-    padding: 1rem 2rem;
-    background: linear-gradient(135deg, var(--color-accent), #8b5cf6);
-    color: white;
-    border-radius: var(--radius-lg);
-    font-weight: 600;
-    transition: all var(--transition-base);
-    box-shadow: var(--shadow-md);
-  }
-
-  .view-all-btn:hover {
-    transform: translateY(-2px);
-    box-shadow: var(--shadow-lg);
-  }
-
-  @keyframes fadeInUp {
-    from {
-      opacity: 0;
-      transform: translateY(30px);
-    }
-    to {
-      opacity: 1;
-      transform: translateY(0);
-    }
-  }
-
-  @media (max-width: 768px) {
-    .hero-content {
+  @media (max-width: 760px) {
+    .areas {
       grid-template-columns: 1fr;
-      text-align: center;
-    }
-
-    .image-placeholder {
-      width: 200px;
-      height: 200px;
-      font-size: 6rem;
-    }
-
-    .contact-content {
-      grid-template-columns: 1fr;
-    }
-
-    .timeline {
-      padding-left: 1.5rem;
-    }
-
-    .timeline-marker {
-      left: -1.85rem;
-    }
-
-    .exp-header {
-      flex-direction: column;
-    }
-
-    .period {
-      align-self: flex-start;
-    }
-
-    .timeline-content:hover {
-      transform: translateX(4px);
     }
   }
 </style>

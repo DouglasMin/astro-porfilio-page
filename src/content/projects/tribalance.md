@@ -1,9 +1,8 @@
 ---
 title: "TriBalance — AI 헬스 코치"
 description: "Apple Health 데이터를 기반으로 수면·운동·스트레스 3축을 분석해 주간 라이프스타일 플랜을 생성하는 AI 에이전트"
-publishedAt: 2025-06-01T00:00:00.000Z
+publishedAt: 2026-04-21T00:00:00.000Z
 featured: true
-image: https://images.unsplash.com/photo-1576091160399-112ba8d25d1d?w=800&h=600&fit=crop
 tags: ["AI", "AWS AgentCore", "LangGraph", "React", "Python"]
 github: "https://github.com/DouglasMin/aws-agentcore-TriBalance"
 order: 3

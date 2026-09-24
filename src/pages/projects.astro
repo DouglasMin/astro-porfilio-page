@@ -1,476 +1,66 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
+import ProjectList from '../components/ProjectList.astro';
 import { getCollection } from 'astro:content';
 import type { CollectionEntry } from 'astro:content';
 
+// Rows show the year in the gutter, so they read newest first
 const allProjects = (await getCollection('projects'))
-  .sort((a: CollectionEntry<'projects'>, b: CollectionEntry<'projects'>) => a.data.order - b.data.order);
+  .sort((a: CollectionEntry<'projects'>, b: CollectionEntry<'projects'>) =>
+    b.data.publishedAt.getTime() - a.data.publishedAt.getTime());
 
-const clientProjects = allProjects.filter(
-  (project: CollectionEntry<'projects'>) => project.data.category === 'client',
-);
-const personalProjects = allProjects.filter(
-  (project: CollectionEntry<'projects'>) => project.data.category === 'personal',
-);
-const portfolioProjects = allProjects.filter(
-  (project: CollectionEntry<'projects'>) => project.data.category === 'portfolio',
-);
+const groups = [
+  { id: 'portfolio', title: '포트폴리오', description: '직접 기획하고 만든 제품과 도구' },
+  { id: 'personal', title: '연구', description: '연구실과 산학 과제에서 진행한 프로젝트' },
+  { id: 'client', title: '외주', description: '클라이언트 의뢰로 만든 작업' },
+] as const;
+
+const sections = groups
+  .map((group) => ({
+    ...group,
+    projects: allProjects.filter((project: CollectionEntry<'projects'>) => project.data.category === group.id),
+  }))
+  .filter((group) => group.projects.length > 0);
 ---
 
-<BaseLayout title="프로젝트 - Douglas" description="민동익(Douglas)이 작업한 다양한 프로젝트들">
-  <section class="page-header">
-    <div class="container">
-      <h1 class="animate-fade-in">프로젝트</h1>
-      <p class="animate-fade-in">제가 작업한 다양한 프로젝트들을 소개합니다</p>
+<BaseLayout title="프로젝트 - 민동익 (Douglas)" description="민동익(Douglas)이 만든 제품, 연구, 외주 프로젝트">
+  <div class="container">
+    <header class="page-intro">
+      <h1>프로젝트</h1>
+      <p>AI 에이전트, 서버리스 백엔드, 모바일 앱까지 직접 만들고 배포한 작업들입니다.</p>
+    </header>
+
+    <div class="groups">
+      {sections.map((group) => (
+        <section aria-labelledby={`group-${group.id}`}>
+          <header class="section-head">
+            <h2 id={`group-${group.id}`}>
+              {group.title}<span class="count">{group.projects.length}</span>
+            </h2>
+            <p class="group-description">{group.description}</p>
+          </header>
+          <ProjectList projects={group.projects} />
+        </section>
+      ))}
     </div>
-  </section>
-
-  <section class="projects-section">
-    <div class="container">
-      {personalProjects.length > 0 && (
-        <section class="projects-group">
-          <header class="projects-group-header">
-            <h2>연구 프로젝트</h2>
-          </header>
-          <div class="projects-grid">
-            {personalProjects.map((project: CollectionEntry<'projects'>, index: number) => (
-              <article class="project-card" style={`animation-delay: ${index * 0.1}s`} data-fade-up>
-                <div class="project-image">
-                  <img src={project.data.image.src} alt={project.data.title} loading="lazy" />
-                  {(project.data.tags.includes('AI') || project.data.tags.includes('Machine Learning')) && (
-                    <span class="ai-badge">🤖 AI Project</span>
-                  )}
-                  {project.data.featured && (
-                    <span class="featured-badge">Featured</span>
-                  )}
-                </div>
-                
-                <div class="project-content">
-                  <div class="project-header">
-                    <h2>{project.data.title}</h2>
-                    <time datetime={project.data.publishedAt.toISOString()}>
-                      {project.data.publishedAt.toLocaleDateString('ko-KR', {
-                        year: 'numeric',
-                        month: 'long',
-                      })}
-                    </time>
-                  </div>
-                  
-                  <p>{project.data.description}</p>
-                  
-                  <div class="project-tags">
-                    {project.data.tags.map((tag: string) => (
-                      <span class="tag">{tag}</span>
-                    ))}
-                  </div>
-                  
-                  <div class="project-links">
-                    {project.data.github && (
-                      <a href={project.data.github} target="_blank" rel="noopener noreferrer" class="project-link">
-                        GitHub
-                      </a>
-                    )}
-                    {project.data.demo && (
-                      <a href={project.data.demo} target="_blank" rel="noopener noreferrer" class="project-link">
-                        Demo
-                      </a>
-                    )}
-                  </div>
-                </div>
-              </article>
-            ))}
-          </div>
-        </section>
-      )}
-
-      {portfolioProjects.length > 0 && (
-        <section class="projects-group">
-          <header class="projects-group-header">
-            <h2>포트폴리오</h2>
-          </header>
-          <div class="projects-grid">
-            {portfolioProjects.map((project: CollectionEntry<'projects'>, index: number) => (
-              <article class="project-card" style={`animation-delay: ${index * 0.1}s`} data-fade-up>
-                <div class="project-image">
-                  <img src={project.data.image.src} alt={project.data.title} loading="lazy" />
-                  {(project.data.tags.includes('AI') || project.data.tags.includes('Machine Learning')) && (
-                    <span class="ai-badge">🤖 AI Project</span>
-                  )}
-                  {project.data.featured && (
-                    <span class="featured-badge">Featured</span>
-                  )}
-                </div>
-
-                <div class="project-content">
-                  <div class="project-header">
-                    <h2>{project.data.title}</h2>
-                    <time datetime={project.data.publishedAt.toISOString()}>
-                      {project.data.publishedAt.toLocaleDateString('ko-KR', {
-                        year: 'numeric',
-                        month: 'long',
-                      })}
-                    </time>
-                  </div>
-
-                  <p>{project.data.description}</p>
-
-                  <div class="project-tags">
-                    {project.data.tags.map((tag: string) => (
-                      <span class="tag">{tag}</span>
-                    ))}
-                  </div>
-
-                  <div class="project-links">
-                    {project.data.github && (
-                      <a href={project.data.github} target="_blank" rel="noopener noreferrer" class="project-link">
-                        GitHub
-                      </a>
-                    )}
-                  </div>
-                </div>
-              </article>
-            ))}
-          </div>
-        </section>
-      )}
-
-      {clientProjects.length > 0 && (
-        <section class="projects-group client-group">
-          <header class="projects-group-header">
-            <h2>클라이언트 포트폴리오 (외주)</h2>
-          </header>
-          <div class="projects-grid">
-            {clientProjects.map((project: CollectionEntry<'projects'>, index: number) => (
-              <article class="project-card client-project-card" style={`animation-delay: ${index * 0.1}s`} data-fade-up>
-                <div class={`project-image ${project.data.demo ? 'project-image-iframe' : ''}`}>
-                  {(project.data.tags.includes('AI') || project.data.tags.includes('Machine Learning')) && (
-                    <span class="ai-badge">🤖 AI Project</span>
-                  )}
-                  {project.data.demo ? (
-                    <iframe
-                      src={project.data.demo}
-                      title={`${project.data.title} 미리보기`}
-                      loading="lazy"
-                      class="project-preview-frame"
-                    />
-                  ) : (
-                    <img src={project.data.image.src} alt={project.data.title} loading="lazy" />
-                  )}
-                  <span class="client-badge">Client Work</span>
-                  {project.data.featured && (
-                    <span class="featured-badge">Featured</span>
-                  )}
-                </div>
-                
-                <div class="project-content">
-                  <div class="project-header">
-                    <h2>{project.data.title}</h2>
-                    <time datetime={project.data.publishedAt.toISOString()}>
-                      {project.data.publishedAt.toLocaleDateString('ko-KR', {
-                        year: 'numeric',
-                        month: 'long',
-                      })}
-                    </time>
-                  </div>
-                  
-                  <p>{project.data.description}</p>
-                  
-                  <div class="project-tags">
-                    {project.data.tags.map((tag: string) => (
-                      <span class="tag">{tag}</span>
-                    ))}
-                  </div>
-                  
-                  <div class="project-links">
-                    {project.data.github && (
-                      <a href={project.data.github} target="_blank" rel="noopener noreferrer" class="project-link">
-                        GitHub
-                      </a>
-                    )}
-                    {project.data.demo && (
-                      <a href={project.data.demo} target="_blank" rel="noopener noreferrer" class="project-link primary-link">
-                        사이트 보기
-                      </a>
-                    )}
-                  </div>
-                </div>
-              </article>
-            ))}
-          </div>
-        </section>
-      )}
-    </div>
-  </section>
+  </div>
 </BaseLayout>
 
 <style>
-  .page-header {
-    padding: var(--spacing-2xl) 0 var(--spacing-xl);
-    text-align: center;
-    background: linear-gradient(135deg, rgba(59, 130, 246, 0.05), rgba(139, 92, 246, 0.05));
-  }
-
-  .page-header h1 {
-    font-size: clamp(2.5rem, 5vw, 3.5rem);
-    margin-bottom: var(--spacing-md);
-  }
-
-  .page-header p {
-    font-size: 1.25rem;
-    color: var(--color-text-secondary);
-  }
-
-  .projects-section {
-    padding: var(--spacing-2xl) 0;
-  }
-
-  .projects-group + .projects-group {
-    margin-top: var(--spacing-2xl);
-    padding-top: var(--spacing-xl);
-    border-top: 1px solid var(--color-border);
-  }
-
-  .projects-group-header {
-    margin-bottom: var(--spacing-lg);
-  }
-
-  .projects-group-header h2 {
-    font-size: 1.75rem;
-    margin-bottom: var(--spacing-xs);
-  }
-
-  .projects-group-header p {
-    color: var(--color-text-secondary);
-  }
-
-  .projects-grid {
+  .groups {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
-    gap: var(--spacing-xl);
+    gap: var(--spacing-2xl);
   }
 
-  .project-card {
-    background-color: var(--color-bg);
-    border: 1px solid var(--color-border);
-    border-radius: var(--radius-lg);
-    overflow: hidden;
-    transition: all var(--transition-base);
-    opacity: 0;
-    transform: translateY(30px);
+  .group-description {
+    font-size: var(--text-sm);
+    color: var(--color-muted);
+    text-align: right;
   }
 
-  .project-card.fade-up-visible {
-    opacity: 1;
-    transform: translateY(0);
-    transition: opacity 0.6s ease-out, transform 0.6s ease-out, box-shadow var(--transition-base), border-color var(--transition-base);
-  }
-
-  [data-theme="dark"] .project-card:hover {
-    transform: translateY(-8px);
-    box-shadow: 0 0 20px rgba(6, 182, 212, 0.3), 0 0 40px rgba(139, 92, 246, 0.15);
-    border-color: var(--color-ai-cyan);
-  }
-
-  [data-theme="dark"] .project-card.fade-up-visible:hover {
-    transform: translateY(-8px);
-  }
-
-  :root .project-card:hover,
-  :not([data-theme="dark"]) .project-card:hover {
-    transform: translateY(-8px);
-    box-shadow: var(--shadow-lg);
-    border-color: var(--color-accent);
-  }
-
-  :not([data-theme="dark"]) .project-card.fade-up-visible:hover {
-    transform: translateY(-8px);
-  }
-
-  .project-image {
-    position: relative;
-    width: 100%;
-    height: 250px;
-    overflow: hidden;
-    background-color: var(--color-bg-secondary);
-  }
-
-  .project-image-iframe {
-    background-color: var(--color-bg);
-  }
-
-  .project-image img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    transition: transform var(--transition-slow);
-  }
-
-  .project-card:hover .project-image img {
-    transform: scale(1.1);
-  }
-
-  .project-preview-frame {
-    width: 100%;
-    height: 100%;
-    border: none;
-    pointer-events: none;
-  }
-
-  .client-project-card {
-    border-color: rgba(56, 189, 248, 0.6);
-    background: radial-gradient(circle at top left, rgba(56, 189, 248, 0.08), transparent 55%);
-  }
-
-  .featured-badge {
-    position: absolute;
-    top: 1rem;
-    right: 1rem;
-    background: linear-gradient(135deg, var(--color-accent), #8b5cf6);
-    color: white;
-    padding: 0.5rem 1rem;
-    border-radius: var(--radius-md);
-    font-size: 0.75rem;
-    font-weight: 700;
-    text-transform: uppercase;
-  }
-
-  .client-badge {
-    position: absolute;
-    top: 1rem;
-    left: 1rem;
-    background: rgba(15, 23, 42, 0.85);
-    color: #a5b4fc;
-    padding: 0.5rem 1rem;
-    border-radius: var(--radius-md);
-    font-size: 0.75rem;
-    font-weight: 700;
-    text-transform: uppercase;
-    border: 1px solid rgba(129, 140, 248, 0.5);
-    backdrop-filter: blur(8px);
-  }
-
-  .project-content {
-    padding: var(--spacing-lg);
-  }
-
-  .project-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: flex-start;
-    gap: var(--spacing-sm);
-    margin-bottom: var(--spacing-sm);
-  }
-
-  .project-header h2 {
-    font-size: 1.5rem;
-    margin: 0;
-  }
-
-  .project-header time {
-    font-size: 0.875rem;
-    color: var(--color-text-secondary);
-    white-space: nowrap;
-  }
-
-  .project-tags {
-    display: flex;
-    flex-wrap: wrap;
-    gap: var(--spacing-xs);
-    margin-bottom: var(--spacing-md);
-  }
-
-  .tag {
-    background: linear-gradient(135deg, rgba(6, 182, 212, 0.1), rgba(139, 92, 246, 0.1));
-    color: var(--color-text-secondary);
-    padding: 0.375rem 0.75rem;
-    border-radius: var(--radius-sm);
-    font-size: 0.75rem;
-    font-weight: 500;
-    border: 1px solid rgba(6, 182, 212, 0.2);
-  }
-
-  .ai-badge {
-    display: inline-flex;
-    align-items: center;
-    gap: 0.25rem;
-    position: absolute;
-    top: 0.75rem;
-    left: 0.75rem;
-    background: linear-gradient(135deg, rgba(6, 182, 212, 0.9), rgba(139, 92, 246, 0.9));
-    color: white;
-    padding: 0.375rem 0.75rem;
-    border-radius: var(--radius-md);
-    font-size: 0.7rem;
-    font-weight: 700;
-    text-transform: uppercase;
-    letter-spacing: 0.05em;
-    z-index: 2;
-    animation: pulse-glow 2s ease-in-out infinite;
-  }
-
-  @keyframes pulse-glow {
-    0%, 100% { box-shadow: 0 0 8px rgba(6, 182, 212, 0.4); }
-    50% { box-shadow: 0 0 20px rgba(6, 182, 212, 0.7), 0 0 30px rgba(139, 92, 246, 0.3); }
-  }
-
-  .project-links {
-    display: flex;
-    gap: var(--spacing-md);
-  }
-
-  .project-link {
-    font-weight: 600;
-    font-size: 0.875rem;
-    padding: 0.5rem 1rem;
-    border: 1px solid var(--color-border);
-    border-radius: var(--radius-md);
-    transition: all var(--transition-fast);
-  }
-
-  .project-link.primary-link {
-    background: linear-gradient(135deg, var(--color-accent), #38bdf8);
-    color: white;
-    border-color: transparent;
-  }
-
-  .project-link.primary-link:hover {
-    filter: brightness(1.05);
-  }
-
-  .project-link:hover {
-    border-color: var(--color-accent);
-    background-color: var(--color-bg-secondary);
-  }
-
-  @media (max-width: 768px) {
-    .projects-grid {
-      grid-template-columns: 1fr;
-    }
-
-    .project-header {
-      flex-direction: column;
+  @media (max-width: 640px) {
+    .group-description {
+      display: none;
     }
   }
 </style>
-
-<script>
-  function setupFadeUpObserver() {
-    const fadeUpCards = document.querySelectorAll('[data-fade-up]');
-    if (fadeUpCards.length > 0) {
-      const observer = new IntersectionObserver(
-        (entries) => {
-          entries.forEach((entry) => {
-            if (entry.isIntersecting) {
-              entry.target.classList.add('fade-up-visible');
-              observer.unobserve(entry.target);
-            }
-          });
-        },
-        { threshold: 0.1 }
-      );
-      fadeUpCards.forEach((card) => observer.observe(card));
-    }
-  }
-
-  document.addEventListener('astro:page-load', setupFadeUpObserver);
-</script>

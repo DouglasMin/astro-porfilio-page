@@ -62,9 +62,15 @@ function md5(buffer: Buffer): string {
   return crypto.createHash('md5').update(buffer).digest('hex');
 }
 
+/** Notion signs file URLs per request; the path before `?` is stable per image. */
+function stripQuery(url: string): string {
+  return url.split('?')[0];
+}
+
 /**
  * Derive a stable, filesystem-safe filename from a URL.
- * Uses the last path segment (without query params) or falls back to an MD5 hash.
+ * Notion names most pasted images `image.png`, so the last path segment is
+ * prefixed with a short hash of the full path to keep filenames unique.
  */
 function filenameFromUrl(url: string): string {
   try {
@@ -74,12 +80,13 @@ function filenameFromUrl(url: string): string {
     // Strip extension — we always save as .webp
     const base = last.replace(/\.[^.]+$/, '');
     if (base.length > 0 && base.length <= 120) {
-      return `${base}.webp`;
+      const pathHash = md5(Buffer.from(parsed.pathname)).slice(0, 8);
+      return `${pathHash}-${base}.webp`;
     }
   } catch {
     // fall through
   }
-  return `${md5(Buffer.from(url))}.webp`;
+  return `${md5(Buffer.from(stripQuery(url)))}.webp`;
 }
 
 // ---------------------------------------------------------------------------
@@ -245,8 +252,10 @@ async function main() {
         const rawBuffer = await downloadImage(url);
         const hash = md5(rawBuffer);
 
+        const cacheKey = stripQuery(url);
+
         // Check cache
-        if (cache[url] && cache[url].hash === hash) {
+        if (cache[cacheKey] && cache[cacheKey].hash === hash) {
           skipped++;
           continue;
         }
@@ -258,7 +267,7 @@ async function main() {
 
         fs.writeFileSync(localPath, webpBuffer);
 
-        cache[url] = {
+        cache[cacheKey] = {
           notionUrl: url,
           localPath: `/${localPath.replace(/\\/g, '/')}`.replace(/^\/public/, ''),
           hash,

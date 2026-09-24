@@ -1,0 +1,138 @@
+---
+import PostList from './PostList.astro';
+import type { PostSummary } from '../lib/blog';
+
+interface Props {
+  posts: PostSummary[];
+  totalPosts: number;
+  currentPage: number;
+  totalPages: number;
+}
+
+const { posts, totalPosts, currentPage, totalPages } = Astro.props;
+
+const pageHref = (page: number) => (page === 1 ? '/blog' : `/blog/page/${page}`);
+const pages = Array.from({ length: totalPages }, (_, index) => index + 1);
+---
+
+<div class="container">
+  <header class="page-intro">
+    <h1>블로그</h1>
+    <p>만들면서 부딪힌 문제와 해결 과정을 기록합니다. AWS, AI 에이전트, CI/CD 이야기가 주로 올라옵니다.</p>
+  </header>
+
+  <section aria-labelledby="all-posts">
+    <header class="section-head">
+      <h2 id="all-posts">모든 글<span class="count">{totalPosts}</span></h2>
+    </header>
+
+    {posts.length === 0 ? (
+      <p class="empty">아직 공개된 글이 없습니다. Notion 데이터베이스에서 Published를 체크하면 여기에 나타납니다.</p>
+    ) : (
+      <PostList posts={posts} />
+    )}
+
+    {totalPages > 1 && (
+      <nav class="pagination" aria-label="페이지 이동">
+        {currentPage > 1 ? (
+          <a class="page-step text-link" href={pageHref(currentPage - 1)}>이전</a>
+        ) : (
+          <span class="page-step" aria-hidden="true">이전</span>
+        )}
+        <ol class="page-numbers">
+          {pages.map((page) => (
+            <li>
+              <a
+                class:list={['page-number pressable', { active: page === currentPage }]}
+                href={pageHref(page)}
+                aria-current={page === currentPage ? 'page' : undefined}
+              >
+                {page}
+              </a>
+            </li>
+          ))}
+        </ol>
+        {currentPage < totalPages ? (
+          <a class="page-step text-link" href={pageHref(currentPage + 1)}>다음</a>
+        ) : (
+          <span class="page-step" aria-hidden="true">다음</span>
+        )}
+      </nav>
+    )}
+  </section>
+</div>
+
+<style>
+  .empty {
+    padding-block: var(--spacing-lg);
+  }
+
+  .pagination {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--spacing-sm);
+    margin-top: var(--spacing-lg);
+    padding-top: var(--spacing-md);
+    border-top: 1px solid var(--color-border);
+    font-size: var(--text-sm);
+  }
+
+  span.page-step {
+    color: var(--color-muted);
+    opacity: 0.5;
+  }
+
+  .page-numbers {
+    display: flex;
+    gap: var(--spacing-2xs);
+    list-style: none;
+  }
+
+  .page-number {
+    display: grid;
+    place-items: center;
+    min-width: 2.25rem;
+    height: 2.25rem;
+    border-radius: var(--radius-md);
+    color: var(--color-text-secondary);
+    font-variant-numeric: tabular-nums;
+  }
+
+  .page-number:hover {
+    color: var(--color-text);
+    background-color: var(--color-accent-soft);
+  }
+
+  .page-number.active {
+    color: var(--color-on-accent);
+    background-color: var(--color-accent);
+  }
+</style>
+
+<script>
+  const LIST_URL_KEY = 'blogListUrl';
+  const SCROLL_KEY = 'blogListScroll';
+  const RESTORE_KEY = 'blogListRestore';
+
+  // This bundle stays loaded after client-side navigation, so only list pages may overwrite the saved position
+  const isListPage = () => /^\/blog(\/page\/\d+)?\/?$/.test(window.location.pathname);
+
+  function saveScroll() {
+    if (!isListPage()) return;
+    sessionStorage.setItem(LIST_URL_KEY, window.location.pathname + window.location.search + window.location.hash);
+    sessionStorage.setItem(SCROLL_KEY, String(window.scrollY));
+  }
+
+  window.addEventListener('scroll', saveScroll, { passive: true });
+  saveScroll();
+
+  if (sessionStorage.getItem(RESTORE_KEY) === '1') {
+    const savedUrl = sessionStorage.getItem(LIST_URL_KEY);
+    const savedScroll = Number(sessionStorage.getItem(SCROLL_KEY) || 0);
+    if (savedUrl === window.location.pathname + window.location.search + window.location.hash) {
+      window.scrollTo({ top: savedScroll, behavior: 'instant' });
+    }
+    sessionStorage.removeItem(RESTORE_KEY);
+  }
+</script>

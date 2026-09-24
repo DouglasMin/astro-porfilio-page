@@ -1,9 +1,8 @@
 ---
 title: "원천청년부 앱"
 description: "교회 청년부 전용 Flutter 앱. 중보기도, 출결, 송리스트 등 파편화된 기능을 단일 앱으로 통합"
-publishedAt: 2025-04-01T00:00:00.000Z
+publishedAt: 2026-08-06T00:00:00.000Z
 featured: false
-image: https://images.unsplash.com/photo-1551650975-87deedd944c3?w=800&h=600&fit=crop
 tags: ["Flutter", "AWS", "Serverless", "DynamoDB", "Mobile"]
 github: "https://github.com/DouglasMin/flutter-woncheon-youth-app"
 order: 6
