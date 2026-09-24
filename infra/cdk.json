@@ -1,0 +1,9 @@
+{
+  "app": "npx tsx bin/app.ts",
+  "context": {
+    "siteOrigins": [
+      "https://main.d3m8pthmupwl40.amplifyapp.com",
+      "http://localhost:4321"
+    ]
+  }
+}

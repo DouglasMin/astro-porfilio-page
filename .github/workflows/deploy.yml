@@ -27,6 +27,8 @@ jobs:
         env:
           NOTION_TOKEN: ${{ secrets.NOTION_TOKEN }}
           NOTION_DATABASE_ID: ${{ secrets.NOTION_DATABASE_ID }}
+          # CloudFront URL from the infra/ stack output; tracking stays off while it is empty
+          PUBLIC_ANALYTICS_URL: ${{ vars.PUBLIC_ANALYTICS_URL }}
         run: npm run build
       
       - name: Create ZIP archive
