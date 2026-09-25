@@ -1,17 +1,16 @@
 ---
-title: "원천청년부 앱"
+title: "OO교회 앱"
 description: "교회 청년부 전용 Flutter 앱. 중보기도, 출결, 송리스트 등 파편화된 기능을 단일 앱으로 통합"
 publishedAt: 2026-08-06T00:00:00.000Z
 featured: false
 tags: ["Flutter", "AWS", "Serverless", "DynamoDB", "Mobile"]
-github: "https://github.com/DouglasMin/flutter-woncheon-youth-app"
 order: 6
-category: "portfolio"
+category: "client"
 ---
 
 ## 프로젝트 개요
 
-원천교회 청년부의 중보기도, 출결, 송리스트 등 파편화된 기능을 하나의 모바일 앱으로 통합하는 프로젝트입니다.
+OO교회 청년부의 중보기도, 출결, 송리스트 등 파편화된 기능을 하나의 모바일 앱으로 통합하는 프로젝트입니다.
 
 ## 주요 기능
 
