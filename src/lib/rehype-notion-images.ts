@@ -8,6 +8,8 @@
  *
  * The plugin reads `.image-cache.json` at build time and rewrites matching
  * `src` attributes on `<img>` elements to their local `/images/blog/...` paths.
+ * It also adds intrinsic `width`/`height` so lazy-loaded images reserve their
+ * space and never shift the layout (or TOC jump targets) as they load.
  */
 
 import * as fs from 'node:fs';
@@ -18,6 +20,8 @@ interface ImageCacheEntry {
   notionUrl: string;
   localPath: string;
   hash: string;
+  width?: number;
+  height?: number;
   lastSynced: string;
 }
 
@@ -47,17 +51,17 @@ function loadImageCache(cacheFile: string): ImageCache {
  * original URLs captured during sync, but the base path (before `?`) is stable
  * for the same image.
  */
-function findLocalPath(url: string, cache: ImageCache): string | undefined {
+function findCacheEntry(url: string, cache: ImageCache): ImageCacheEntry | undefined {
   // Direct match (unlikely due to signed URLs, but cheap to check)
   if (cache[url]) {
-    return cache[url].localPath;
+    return cache[url];
   }
 
   // Strip query string and compare base paths
   const baseUrl = url.split('?')[0];
   for (const [cachedUrl, entry] of Object.entries(cache)) {
     if (cachedUrl.split('?')[0] === baseUrl) {
-      return entry.localPath;
+      return entry;
     }
   }
 
@@ -89,10 +93,16 @@ export function rehypeNotionImages(options: RehypeNotionImagesOptions = {}) {
       if (typeof src !== 'string') return;
       if (!NOTION_IMAGE_PATTERN.test(src)) return;
 
-      const localPath = findLocalPath(src, cache);
-      if (localPath) {
-        node.properties!.src = localPath;
-      }
+      const entry = findCacheEntry(src, cache);
+      if (!entry) return;
+
+      node.properties = {
+        ...node.properties,
+        src: entry.localPath,
+        ...(entry.width && entry.height ? { width: entry.width, height: entry.height } : {}),
+        loading: 'lazy',
+        decoding: 'async',
+      };
     });
   };
 }

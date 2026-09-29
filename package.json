@@ -5,7 +5,7 @@
   "scripts": {
     "dev": "astro dev",
     "sync:images": "tsx scripts/sync-notion-images.ts",
-    "build": "npm run sync:images && astro check && astro build",
+    "build": "npm run sync:images && astro check && astro build --force",
     "preview": "astro preview",
     "deploy": "bash ./scripts/deploy-amplify.sh"
   },

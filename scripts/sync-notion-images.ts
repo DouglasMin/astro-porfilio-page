@@ -1,9 +1,10 @@
 /**
  * Notion Image Sync Script
  *
- * Downloads images from Notion blog posts, resizes them to 720px max width,
- * converts to WebP, and saves locally. Uses a hash-based cache to skip
- * unchanged images on subsequent runs.
+ * Downloads images from Notion blog posts, caps them at 2400px wide,
+ * converts to WebP, and saves locally. Images stay near full resolution so
+ * diagrams remain legible on retina screens and in the zoom viewer.
+ * Uses a hash-based cache to skip unchanged images on subsequent runs.
  *
  * Usage: tsx scripts/sync-notion-images.ts
  */
@@ -23,8 +24,15 @@ interface ImageCacheEntry {
   notionUrl: string;
   localPath: string;
   hash: string;
+  width?: number;
+  height?: number;
+  /** Matches PROCESSING_VERSION when the file was produced with current settings. */
+  processingVersion?: number;
   lastSynced: string;
 }
+
+/** Bump whenever processImage output changes so cached images are regenerated. */
+const PROCESSING_VERSION = 2;
 
 interface ImageCache {
   [notionUrl: string]: ImageCacheEntry;
@@ -172,21 +180,28 @@ async function downloadImage(url: string): Promise<Buffer> {
   return Buffer.from(arrayBuffer);
 }
 
+/**
+ * Photos (JPEG) compress well with lossy WebP. Everything else is usually a
+ * screenshot or diagram, where lossy artifacts blur small text and thin
+ * lines, so it gets near-lossless encoding instead.
+ */
 async function processImage(
   buffer: Buffer,
   maxWidth: number,
-): Promise<Buffer> {
+): Promise<{ data: Buffer; width: number; height: number }> {
   const image = sharp(buffer);
-  const metadata = await image.metadata();
+  const { format } = await image.metadata();
 
-  if (metadata.width && metadata.width > maxWidth) {
-    return image
-      .resize({ width: maxWidth, withoutEnlargement: true })
-      .webp({ quality: 80 })
-      .toBuffer();
-  }
+  const webpOptions =
+    format === 'jpeg'
+      ? { quality: 85 }
+      : { nearLossless: true, quality: 60 };
 
-  return image.webp({ quality: 80 }).toBuffer();
+  const { data, info } = await image
+    .resize({ width: maxWidth, withoutEnlargement: true })
+    .webp(webpOptions)
+    .toBuffer({ resolveWithObject: true });
+  return { data, width: info.width, height: info.height };
 }
 
 // ---------------------------------------------------------------------------
@@ -206,7 +221,7 @@ async function main() {
     notionToken,
     databaseId,
     outputDir: 'public/images/blog',
-    maxWidth: 720,
+    maxWidth: 2400,
     cacheFile: '.image-cache.json',
   };
 
@@ -255,22 +270,30 @@ async function main() {
         const cacheKey = stripQuery(url);
 
         // Check cache
-        if (cache[cacheKey] && cache[cacheKey].hash === hash) {
+        const cached = cache[cacheKey];
+        if (
+          cached &&
+          cached.hash === hash &&
+          cached.processingVersion === PROCESSING_VERSION
+        ) {
           skipped++;
           continue;
         }
 
         // Process and save
-        const webpBuffer = await processImage(rawBuffer, config.maxWidth);
+        const { data, width, height } = await processImage(rawBuffer, config.maxWidth);
         const filename = filenameFromUrl(url);
         const localPath = path.join(pageDir, filename);
 
-        fs.writeFileSync(localPath, webpBuffer);
+        fs.writeFileSync(localPath, data);
 
         cache[cacheKey] = {
           notionUrl: url,
           localPath: `/${localPath.replace(/\\/g, '/')}`.replace(/^\/public/, ''),
           hash,
+          width,
+          height,
+          processingVersion: PROCESSING_VERSION,
           lastSynced: new Date().toISOString(),
         };
 
