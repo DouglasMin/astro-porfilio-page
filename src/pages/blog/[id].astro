@@ -440,6 +440,22 @@ const { Content } = await render(entry);
     border-color: var(--color-text-secondary);
   }
 
+  /* Videos: Notion uploads transcoded by scripts/notion-videos.ts */
+  .prose :global(.notion-video) {
+    margin-block: 2em;
+  }
+
+  /* --media-aspect is set per video by rehype-notion-images; portrait clips stop at 75% of the screen height */
+  .prose :global(video) {
+    display: block;
+    width: min(100%, calc(75svh * var(--media-aspect, 16 / 9)));
+    height: auto;
+    aspect-ratio: var(--media-aspect, 16 / 9);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    background: #000;
+  }
+
   /* Notion column layouts */
   .prose :global(.notion-column_list) {
     display: grid;

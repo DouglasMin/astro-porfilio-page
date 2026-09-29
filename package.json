@@ -13,6 +13,7 @@
     "@notionhq/client": "^2.2.15",
     "astro": "^5.0.0",
     "dotenv": "^17.2.3",
+    "ffmpeg-static": "^5.3.0",
     "marked": "^17.0.1",
     "notion-astro-loader": "^0.4.0",
     "notion-to-md": "^3.1.1",

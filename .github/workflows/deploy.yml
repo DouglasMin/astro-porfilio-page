@@ -22,7 +22,16 @@ jobs:
       
       - name: Install dependencies
         run: npm ci
-      
+
+      # Transcoded Notion videos are not committed; carry them between runs so
+      # only newly uploaded videos get converted (see scripts/notion-videos.ts)
+      - name: Restore transcoded videos
+        uses: actions/cache/restore@v4
+        with:
+          path: public/videos
+          key: notion-videos-${{ github.sha }}
+          restore-keys: notion-videos-
+
       - name: Build Astro site
         env:
           NOTION_TOKEN: ${{ secrets.NOTION_TOKEN }}
@@ -30,7 +39,14 @@ jobs:
           # CloudFront URL from the infra/ stack output; tracking stays off while it is empty
           PUBLIC_ANALYTICS_URL: ${{ vars.PUBLIC_ANALYTICS_URL }}
         run: npm run build
-      
+
+      - name: Save transcoded videos
+        if: hashFiles('public/videos/**') != ''
+        uses: actions/cache/save@v4
+        with:
+          path: public/videos
+          key: notion-videos-${{ hashFiles('public/videos/**') }}
+
       - name: Create ZIP archive
         run: |
           TIMESTAMP=$(date +%Y%m%d-%H%M%S)

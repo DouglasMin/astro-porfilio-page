@@ -4,6 +4,9 @@ node_modules/
 .env
 .DS_Store
 .image-cache.json
+# Transcoded Notion videos: rebuilt from Notion (CI keeps them in actions/cache)
+public/videos/
+.video-cache.json
 .kiro/
 .superpowers/
 
