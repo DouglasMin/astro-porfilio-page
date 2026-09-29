@@ -19,6 +19,9 @@ S3_BUCKET="astro-portfolio-website"   # S3 버킷 이름
 S3_PREFIX=""                          # S3 prefix (루트면 빈 문자열)
 AWS_PROFILE="dongik2"                 # AWS CLI 프로필
 
+# 어느 디렉터리에서 실행하든 프로젝트 루트 기준으로 동작
+cd "$(dirname "$0")/.."
+
 if [[ -z "$S3_BUCKET" ]]; then
   echo "❌ S3_BUCKET 이 설정되지 않았습니다. scripts/deploy-amplify.sh 파일을 열어 값을 채워주세요."
   exit 1
@@ -30,7 +33,7 @@ npm run build
 echo "📦 dist 폴더를 ZIP으로 압축 중..."
 TIMESTAMP=$(date +%Y%m%d-%H%M%S)
 ZIP_FILE="dist-${TIMESTAMP}.zip"
-cd dist && zip -r ../"$ZIP_FILE" . && cd ..
+(cd dist && zip -r ../"$ZIP_FILE" .)
 
 echo "☁️ $ZIP_FILE → S3 업로드 중..."
 aws s3 cp "$ZIP_FILE" "s3://$S3_BUCKET/$ZIP_FILE" --profile "$AWS_PROFILE"
