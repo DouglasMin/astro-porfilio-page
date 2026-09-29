@@ -1,8 +1,10 @@
 /**
  * Client behaviour for a blog post page: Mermaid diagrams, reading progress,
- * table of contents with scroll spy, code-block toolbars and link copying.
- * Safe to call on every `astro:page-load`; it is a no-op off post pages.
+ * table of contents with scroll spy, code-block toolbars, image zoom and link
+ * copying. Safe to call on every `astro:page-load`; it is a no-op off post pages.
  */
+
+import { setupImageViewer } from './image-viewer';
 
 interface MermaidApi {
   initialize: (config: Record<string, unknown>) => void;
@@ -244,6 +246,7 @@ export function initBlogPost(): void {
   setupProgress(signal);
   setupToc(prose, signal);
   setupCodeBlocks(prose);
+  setupImageViewer(prose, signal);
   setupCopyLink(signal);
   setupBackLinks(signal);
 }
